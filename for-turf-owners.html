@@ -45,6 +45,25 @@
   .links strong { display:block; margin-bottom:4px; font-size:17px; }
   .links span { color:var(--muted); font-size:15px; line-height:1.6; }
   footer { max-width:1000px; margin:0 auto; padding:0 16px 120px; color:var(--muted); font-size:13px; line-height:1.7; }
+
+  @media (max-width:560px) {
+    .hero { min-height:62vh; }
+    .hero-inner { padding:32px 16px 30px; }
+    h1 { font-size:30px; max-width:none; }
+    .hero p { font-size:16px; margin-bottom:16px; }
+    .fact { font-size:13px; padding:8px 11px; }
+    main { padding:26px 16px 30px; }
+    section { margin-bottom:30px; }
+    h2 { font-size:21px; }
+    .lede, .card p, .links span { font-size:15px; }
+    .card { padding:16px; }
+    .try { padding:20px 18px; }
+    .say { font-size:15px; }
+    .line { flex-direction:column; gap:2px; padding:9px 0; }
+    .who { flex:none; font-size:11px; }
+    .steps li { padding:12px 14px 12px 50px; }
+    footer { padding-bottom:130px; }
+  }
 </style>
 </head>
 <body>
@@ -63,6 +82,13 @@
 </section>
 
 <main>
+
+  <section class="try">
+    <h2>Try it yourself, right now</h2>
+    <p>Tap the green button at the bottom of this page and talk to the agent exactly as a customer would. It is not a recording &mdash; it is a real booking agent, running live for a turf in Mumbai, so it will answer with that venue's name, prices and timings.</p>
+    <span class="say">Try saying: &ldquo;I want to book cricket tomorrow, 9 PM to 11 PM.&rdquo;</span>
+    <p>Then try asking for a time that is already taken, or ask it in Hindi. Yours would be set up with your turf's name, your grounds, your rates and your rules.</p>
+  </section>
 
   <section>
     <h2>The calls you are losing right now</h2>
@@ -83,12 +109,6 @@
     </div>
   </section>
 
-  <section class="try">
-    <h2>Try it yourself, right now</h2>
-    <p>Tap the green button at the bottom of this page and talk to the agent exactly as a customer would. It is not a recording &mdash; it is a real booking agent, running live for a turf in Mumbai, so it will answer with that venue's name, prices and timings.</p>
-    <span class="say">Try saying: &ldquo;I want to book cricket tomorrow, 9 PM to 11 PM.&rdquo;</span>
-    <p>Then try asking for a time that is already taken, or ask it in Hindi. Yours would be set up with your turf's name, your grounds, your rates and your rules.</p>
-  </section>
 
   <section>
     <h2>What it does on a call</h2>
