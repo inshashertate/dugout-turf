@@ -101,6 +101,13 @@
   .pill.unpaid { color:var(--bad); background:color-mix(in srgb, var(--bad) 14%, transparent); }
   select { padding:5px 8px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--ink); font-size:12.5px; }
   .table-wrap { overflow-x:auto; }
+  .daynav { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .daynav button { border:1px solid var(--line); background:var(--surface); color:var(--ink);
+                   width:34px; height:34px; border-radius:9px; font-size:16px; cursor:pointer; }
+  .daynav button:hover { border-color:var(--brand); color:var(--brand); }
+  .daynav .day { font-weight:650; font-size:15px; min-width:210px; }
+  .daynav .day small { display:block; font-weight:400; font-size:12.5px; color:var(--ink-3); }
+  .daynav .today-btn { width:auto; padding:0 12px; font-size:13px; }
   footer { text-align:center; color:var(--ink-3); font-size:12px; padding:0 16px 40px; }
 </style>
 </head>
@@ -176,6 +183,12 @@
 
     <h2>Bookings</h2>
     <div class="card">
+      <div class="daynav">
+        <button id="prevDay" type="button" aria-label="Previous day">‹</button>
+        <div class="day" id="dayLabel"></div>
+        <button id="nextDay" type="button" aria-label="Next day">›</button>
+        <button id="todayBtn" class="today-btn" type="button">Today</button>
+      </div>
       <div class="table-wrap">
         <table>
           <thead><tr>
@@ -248,6 +261,15 @@ const hour12 = h => (h % 12 === 0 ? 12 : h % 12) + (h < 12 ? " AM" : " PM");
 const sameDay = (a, b) => a.toDateString() === b.toDateString();
 const fmtDate = d => d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 let range = "week";
+let selectedDate = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+function dayLabel(d) {
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  const diff = Math.round((d - t) / DAY);
+  if (diff === 0) return "today";
+  if (diff === -1) return "yesterday";
+  if (diff === 1) return "tomorrow";
+  return fmtDate(d);
+}
 
 function inRange(b) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -260,6 +282,7 @@ function inRange(b) {
 // ---------- rendering ----------
 function renderTiles(list) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
+  const daysList = BOOKINGS.filter(b => sameDay(b.date, selectedDate));
   const revenue = list.reduce((s, b) => s + b.amount, 0);
   const hours = list.reduce((s, b) => s + b.hours, 0);
   const pending = list.filter(b => b.pay !== "paid")
@@ -271,8 +294,8 @@ function renderTiles(list) {
       <div class="note">${list.length} bookings · ${hours} hours</div></div>
     <div class="tile"><div class="label">Pending payment</div><div class="value">${money(Math.round(pending))}</div>
       <div class="note">${list.filter(b => b.pay !== "paid").length} bookings not fully paid</div></div>
-    <div class="tile"><div class="label">Today's bookings</div><div class="value">${todays.length}</div>
-      <div class="note">${todays.reduce((s, b) => s + b.hours, 0)} hours booked</div></div>
+    <div class="tile"><div class="label">Bookings on ${dayLabel(selectedDate)}</div><div class="value">${daysList.length}</div>
+      <div class="note">${money(daysList.reduce((s, b) => s + b.amount, 0))} · ${daysList.reduce((s, b) => s + b.hours, 0)} hours</div></div>
     <div class="tile"><div class="label">Average per booking</div><div class="value">${money(list.length ? Math.round(revenue / list.length) : 0)}</div>
       <div class="note">Weekday ₹400/hr · weekend ₹600/hr</div></div>`;
 }
@@ -328,11 +351,18 @@ function renderSplits(list) {
     `<p class="cap" style="margin-top:14px">${th} booked hours in this period.</p>`;
 }
 
-function renderRows(list) {
-  const rows = [...list].reverse().slice(0, 40);
+function renderRows() {
+  const day = BOOKINGS.filter(b => sameDay(b.date, selectedDate));
+  const rows = [...day].sort((a, b) => a.start - b.start);
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  const diff = Math.round((selectedDate - t) / DAY);
+  const pretty = selectedDate.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
+  const rel = diff === 0 ? "Today" : diff === -1 ? "Yesterday" : diff === 1 ? "Tomorrow" : pretty.split(",")[0];
+  document.getElementById("dayLabel").innerHTML =
+    `${rel} <small>${pretty} · ${day.length} booking${day.length === 1 ? "" : "s"} · ${money(day.reduce((s, b) => s + b.amount, 0))}</small>`;
   document.getElementById("rows").innerHTML = rows.map(b => `
     <tr>
-      <td>${b.date.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}</td>
+      <td>${fmtDate(b.date)}</td>
       <td>${hour12(b.start)} – ${hour12(b.start + b.hours)}</td>
       <td>${b.name}</td><td>${b.phone}</td><td>${b.sport}</td><td>Ground ${b.ground}</td>
       <td class="num">${money(b.amount)}</td>
@@ -342,7 +372,7 @@ function renderRows(list) {
           <option value="advance" ${b.pay === "advance" ? "selected" : ""}>Advance</option>
           <option value="unpaid" ${b.pay === "unpaid" ? "selected" : ""}>Unpaid</option>
         </select></td>
-    </tr>`).join("") || `<tr><td colspan="8" style="color:var(--ink-3)">No bookings in this period.</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="8" style="color:var(--ink-3)">No bookings on this day.</td></tr>`;
   document.querySelectorAll("#rows select").forEach(sel => sel.onchange = e => {
     const b = BOOKINGS.find(x => x.id === e.target.dataset.id);
     b.pay = e.target.value; store.set(b.id, b.pay); draw();
@@ -351,7 +381,7 @@ function renderRows(list) {
 
 function draw() {
   const list = BOOKINGS.filter(inRange);
-  renderTiles(list); renderRevChart(); renderHourChart(list); renderSplits(list); renderRows(list);
+  renderTiles(list); renderRevChart(); renderHourChart(list); renderSplits(list); renderRows();
 }
 
 // ---------- wiring ----------
@@ -360,6 +390,13 @@ document.querySelectorAll(".filters button").forEach(btn => btn.onclick = () => 
   document.querySelectorAll(".filters button").forEach(b => b.setAttribute("aria-pressed", b === btn));
   draw();
 });
+function shiftDay(days) {
+  selectedDate = new Date(selectedDate.getTime() + days * DAY);
+  selectedDate.setHours(0, 0, 0, 0); draw();
+}
+document.getElementById("prevDay").onclick = () => shiftDay(-1);
+document.getElementById("nextDay").onclick = () => shiftDay(1);
+document.getElementById("todayBtn").onclick = () => { selectedDate = new Date(); selectedDate.setHours(0, 0, 0, 0); draw(); };
 document.getElementById("themeBtn").onclick = () => {
   const dark = document.documentElement.getAttribute("data-theme") === "dark";
   document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
