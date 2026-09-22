@@ -65,6 +65,45 @@
     .steps li { padding:12px 14px 12px 50px; }
     footer { padding-bottom:130px; }
   }
+
+  /* ---- motion ---- */
+  @keyframes kenburns { from { transform:scale(1); } to { transform:scale(1.12); } }
+  @keyframes riseIn { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+  @keyframes popIn { from { opacity:0; transform:scale(.82); } to { opacity:1; transform:scale(1); } }
+  @keyframes glow { 0%,100% { box-shadow:0 0 0 0 rgba(22,163,74,.45); } 50% { box-shadow:0 0 0 14px rgba(22,163,74,0); } }
+  @keyframes blink { 0%,100% { opacity:.25; } 50% { opacity:1; } }
+
+  .hero { overflow:hidden; }
+  .hero::after { content:""; position:absolute; inset:-6%; z-index:-1; background:inherit;
+                 animation:kenburns 22s ease-out forwards; }
+  .hero-inner > * { animation:riseIn .7s cubic-bezier(.2,.7,.3,1) both; }
+  .hero-inner > .tag { animation-delay:.05s; }
+  .hero-inner > h1 { animation-delay:.18s; }
+  .hero-inner > p { animation-delay:.32s; }
+  .hero-inner > .hero-facts { animation-delay:.46s; }
+  .hero-facts .fact { animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) both; }
+  .hero-facts .fact:nth-child(1) { animation-delay:.52s; }
+  .hero-facts .fact:nth-child(2) { animation-delay:.62s; }
+  .hero-facts .fact:nth-child(3) { animation-delay:.72s; }
+
+  .reveal { opacity:0; transform:translateY(22px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.7,.3,1); }
+  .reveal.in { opacity:1; transform:none; }
+  .card.reveal, .links a.reveal, .steps li.reveal { transition-duration:.55s; }
+  .card:hover, .links a:hover { transform:translateY(-3px); box-shadow:0 10px 24px rgba(15,23,42,.07); }
+  .card, .links a { transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease, opacity .6s ease; }
+
+  .try.in .say { animation:glow 2.6s ease-in-out 1.2s infinite; }
+  .chat .line { opacity:0; transform:translateY(10px); }
+  .chat.in .line { animation:riseIn .45s cubic-bezier(.2,.7,.3,1) both; }
+  .typing { display:inline-flex; gap:4px; align-items:center; }
+  .typing i { width:6px; height:6px; border-radius:50%; background:var(--green); display:block; animation:blink 1.1s infinite; }
+  .typing i:nth-child(2) { animation-delay:.18s; }
+  .typing i:nth-child(3) { animation-delay:.36s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero::after, .hero-inner > *, .hero-facts .fact, .chat.in .line { animation:none !important; }
+    .reveal, .chat .line { opacity:1 !important; transform:none !important; transition:none !important; }
+  }
 </style>
 </head>
 <body>
@@ -197,6 +236,41 @@
 <footer>
   Autosham &mdash; voice booking agents for turf businesses. This page is a live demonstration. The call button connects to a sample agent for a made-up venue called Greenfield Turf, so nothing you book here affects a real business. Photographs are of a customer venue.
 </footer>
+
+
+<script>
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var targets = document.querySelectorAll('main h2, .lede, .card, .links a, .steps li, .chat, .try, footer');
+    if (reduce || !('IntersectionObserver' in window)) {
+      targets.forEach(function (el) { el.classList.add('in'); });
+      document.querySelectorAll('.chat .line').forEach(function (l) { l.style.opacity = 1; l.style.transform = 'none'; });
+      return;
+    }
+    targets.forEach(function (el) { el.classList.add('reveal'); });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        el.classList.add('in');
+        // stagger siblings inside a grid
+        var group = el.parentElement;
+        if (group && (group.classList.contains('grid') || group.classList.contains('steps') || group.classList.contains('links'))) {
+          var i = Array.prototype.indexOf.call(group.children, el);
+          el.style.transitionDelay = Math.min(i * 90, 450) + 'ms';
+        }
+        // play the transcript out line by line
+        if (el.classList.contains('chat')) {
+          el.querySelectorAll('.line').forEach(function (line, n) {
+            line.style.animationDelay = (n * 260) + 'ms';
+          });
+        }
+        io.unobserve(el);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+    targets.forEach(function (el) { io.observe(el); });
+  }());
+</script>
 
 <script>
   (function(d, s, id) {
