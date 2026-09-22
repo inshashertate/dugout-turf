@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dug Out Turf — Owner Dashboard</title>
-<meta name="description" content="Owner dashboard demo for Dug Out Turf: bookings, revenue and payment tracking from the voice agent.">
+<title>The Dugout Turf — Owner Dashboard</title>
+<meta name="description" content="Owner dashboard demo for The Dugout Turf: bookings, revenue and payment tracking from the voice agent.">
 <style>
   :root {
     color-scheme: light;
@@ -60,7 +60,7 @@
            padding:8px 12px; border-radius:9px; font-size:13.5px; cursor:pointer; }
   main { max-width:1180px; margin:0 auto; padding:22px 16px 80px; }
   .hero { position:relative; border-radius:16px; overflow:hidden; margin-bottom:22px;
-          background:#0b0f0c url("img/football-night.jpg") center/cover no-repeat; min-height:170px;
+          background:#0b0f0c url("img/dugout-aerial.jpg") center/cover no-repeat; min-height:170px;
           display:flex; align-items:flex-end; }
   .hero::after { content:""; position:absolute; inset:0;
                  background:linear-gradient(90deg,rgba(6,20,11,.92) 0%,rgba(6,20,11,.55) 55%,rgba(6,20,11,.15) 100%); }
@@ -146,7 +146,7 @@
 <!-- ============ LOGIN ============ -->
 <section class="login-wrap" id="loginView">
   <form class="login" id="loginForm" autocomplete="off">
-    <h1>Dug Out <span style="color:var(--brand)">Turf</span></h1>
+    <h1>The Dugout <span style="color:var(--brand)">Turf</span></h1>
     <p class="sub">Owner dashboard — bookings, revenue and payments taken by your voice agent.</p>
     <label for="email">Email</label>
     <input id="email" type="email" value="owner@dugoutturf.com" required>
@@ -163,7 +163,7 @@
 <div id="appView" hidden>
   <header>
     <div class="bar">
-      <div class="logo">Dug Out <span>Turf</span></div>
+      <div class="logo">The Dugout <span>Turf</span></div>
       <span class="demo-chip">Demo</span>
       <div class="right">
         <button class="ghost" id="themeBtn" type="button">Dark mode</button>
@@ -175,7 +175,7 @@
   <main>
     <section class="hero">
       <div class="hero-txt">
-        <h1>Good to see you, Dug Out Turf</h1>
+        <h1>Good to see you, The Dugout Turf</h1>
         <p>Two floodlit grounds · open 6 AM to 2 AM · bookings taken by your voice agent</p>
       </div>
       <div class="hero-stats" id="heroStats"></div>
@@ -198,7 +198,7 @@
         <div class="legend"><span><span class="swatch" style="background:var(--series-1)"></span>Daily revenue</span></div>
       </div>
       <div class="card">
-        <img class="card-img" src="img/football-shot.jpg" alt="Football match on the floodlit turf" loading="lazy">
+        <img class="card-img" src="img/dugout-entrance.jpg" alt="The Dugout Turf entrance at night" loading="lazy">
         <h3>Payments</h3>
         <p class="cap">Of the selected period's revenue</p>
         <div id="paySplit"></div>
@@ -225,7 +225,7 @@
 
     <div class="cards">
       <div class="card">
-        <img class="card-img" src="img/cricket-box.jpg" alt="Netted cricket turf under floodlights" loading="lazy">
+        <img class="card-img" src="img/dugout-grounds.jpg" alt="Both grounds in play at night" loading="lazy">
         <h3>Grounds &amp; sports</h3>
         <p class="cap">Share of booked hours</p>
         <div id="usageSplit"></div>
@@ -258,7 +258,7 @@
       <p class="cap" style="margin-top:12px">Payment status can be changed here; it is saved in this browser.</p>
     </div>
   </main>
-  <footer>Demo dashboard · sample data · Dug Out Turf voice agent</footer>
+  <footer>Demo dashboard · sample data · The Dugout Turf voice agent</footer>
 </div>
 
 <script>
@@ -426,7 +426,7 @@ function renderHero() {
 function renderGrounds() {
   const open = 20; // 6 AM to 2 AM
   const day = BOOKINGS.filter(b => sameDay(b.date, selectedDate));
-  const imgs = { 1: "img/football-shot.jpg", 2: "img/cricket-box.jpg" };
+  const imgs = { 1: "img/dugout-grounds.jpg", 2: "img/dugout-entrance.jpg" };
   document.getElementById("groundCards").innerHTML = [1, 2].map(g => {
     const list = day.filter(b => b.ground === g);
     const hrs = list.reduce((s, b) => s + b.hours, 0);
