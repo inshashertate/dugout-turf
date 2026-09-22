@@ -59,6 +59,15 @@
   .ghost { background:transparent; border:1px solid var(--line); color:var(--ink-2);
            padding:8px 12px; border-radius:9px; font-size:13.5px; cursor:pointer; }
   main { max-width:1180px; margin:0 auto; padding:22px 16px 80px; }
+  .hero { position:relative; border-radius:16px; overflow:hidden; margin-bottom:22px;
+          background:#0b0f0c url("img/football-night.jpg") center/cover no-repeat; min-height:170px;
+          display:flex; align-items:flex-end; }
+  .hero::after { content:""; position:absolute; inset:0;
+                 background:linear-gradient(90deg,rgba(6,20,11,.92) 0%,rgba(6,20,11,.55) 55%,rgba(6,20,11,.15) 100%); }
+  .hero-txt { position:relative; z-index:1; padding:20px 22px; color:#fff; }
+  .hero-txt h1 { margin:0 0 4px; font-size:22px; letter-spacing:-.01em; }
+  .hero-txt p { margin:0; font-size:13.5px; opacity:.88; }
+  .card-img { width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:12px; }
   h2 { font-size:17px; margin:30px 0 12px; }
   .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
   .filters button { padding:8px 14px; border-radius:999px; border:1px solid var(--line);
@@ -143,6 +152,13 @@
   </header>
 
   <main>
+    <section class="hero">
+      <div class="hero-txt">
+        <h1>Good to see you, Dug Out Turf</h1>
+        <p>Two floodlit grounds · open 6 AM to 2 AM · bookings taken by your voice agent</p>
+      </div>
+    </section>
+
     <div class="filters" role="group" aria-label="Time range">
       <button data-range="today" aria-pressed="false">Today</button>
       <button data-range="week" aria-pressed="true">This week</button>
@@ -160,6 +176,7 @@
         <div class="legend"><span><span class="swatch" style="background:var(--series-1)"></span>Daily revenue</span></div>
       </div>
       <div class="card">
+        <img class="card-img" src="img/football-shot.jpg" alt="Football match on the floodlit turf" loading="lazy">
         <h3>Payments</h3>
         <p class="cap">Of the selected period's revenue</p>
         <div id="paySplit"></div>
@@ -175,6 +192,7 @@
         <div class="legend"><span><span class="swatch" style="background:var(--series-3)"></span>Bookings</span></div>
       </div>
       <div class="card">
+        <img class="card-img" src="img/cricket-box.jpg" alt="Netted cricket turf under floodlights" loading="lazy">
         <h3>Grounds &amp; sports</h3>
         <p class="cap">Share of booked hours</p>
         <div id="usageSplit"></div>
