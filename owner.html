@@ -141,7 +141,7 @@
     <button class="primary" type="submit">Sign in</button>
     <div class="err" id="loginErr"></div>
     <div class="hint"><b>Demo login</b> — owner@dugoutturf.com / demo123<br>
-      Bookings taken by the voice agent will appear here.</div>
+      Sample data for the demo; no real customer details are shown.</div>
   </form>
 </section>
 
@@ -240,7 +240,7 @@
       <p class="cap" style="margin-top:12px">Payment status can be changed here; it is saved in this browser.</p>
     </div>
   </main>
-  <footer>Dug Out Turf · owner dashboard</footer>
+  <footer>Demo dashboard · sample data · Dug Out Turf voice agent</footer>
 </div>
 
 <script>
@@ -256,9 +256,37 @@ const money = n => "₹" + n.toLocaleString("en-IN");
 const DAY = 86400000;
 
 function buildBookings() {
-  return [];   // no sample data — the dashboard starts empty until real bookings are connected
+  const out = [];
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  for (let d = -20; d <= 6; d++) {
+    const date = new Date(today.getTime() + d * DAY);
+    const weekend = date.getDay() === 0 || date.getDay() === 6;
+    const rate = weekend ? 600 : 400;
+    const slots = weekend ? 7 + Math.floor(rnd() * 3) : 4 + Math.floor(rnd() * 3);
+    const used = new Set();
+    for (let i = 0; i < slots; i++) {
+      const start = 15 + Math.floor(rnd() * 9);          // 3 PM – 11 PM starts
+      const hours = rnd() > 0.72 ? 1 : 2;
+      const ground = used.has(start + "-1") ? 2 : (rnd() > 0.5 ? 1 : 2);
+      const key = start + "-" + ground;
+      if (used.has(key)) continue;
+      used.add(key);
+      const past = date.getTime() < today.getTime();
+      const pay = past ? (rnd() > 0.12 ? "paid" : "advance")
+                       : (rnd() > 0.55 ? "advance" : (rnd() > 0.5 ? "paid" : "unpaid"));
+      out.push({
+        id: date.toISOString().slice(0, 10) + "-" + start + "-" + ground,
+        date, start, hours, ground, rate,
+        amount: rate * hours,
+        sport: rnd() > 0.45 ? "Cricket" : "Football",
+        name: pick(NAMES),
+        phone: "9" + String(100000000 + Math.floor(rnd() * 899999999)),
+        pay
+      });
+    }
+  }
+  return out.sort((a, b) => a.date - b.date || a.start - b.start);
 }
-
 const BOOKINGS = buildBookings();
 
 // payment overrides kept per browser
