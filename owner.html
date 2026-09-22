@@ -48,7 +48,7 @@
   .err { color:var(--bad); font-size:13px; margin-top:10px; min-height:18px; }
 
   /* ---------- app ---------- */
-  header { background:var(--surface); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header { background:var(--surface); border-bottom:1px solid var(--line); }
   .bar { max-width:1180px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:12px; }
   .logo { font-weight:800; letter-spacing:-.02em; }
   .logo span { color:var(--brand); }
@@ -286,7 +286,7 @@ function dayLabel(d) {
   if (diff === 0) return "today";
   if (diff === -1) return "yesterday";
   if (diff === 1) return "tomorrow";
-  return fmtDate(d);
+  return "on " + fmtDate(d);
 }
 
 function inRange(b) {
@@ -312,7 +312,7 @@ function renderTiles(list) {
       <div class="note">${list.length} bookings · ${hours} hours</div></div>
     <div class="tile"><div class="label">Pending payment</div><div class="value">${money(Math.round(pending))}</div>
       <div class="note">${list.filter(b => b.pay !== "paid").length} bookings not fully paid</div></div>
-    <div class="tile"><div class="label">Bookings on ${dayLabel(selectedDate)}</div><div class="value">${daysList.length}</div>
+    <div class="tile"><div class="label">Bookings ${dayLabel(selectedDate)}</div><div class="value">${daysList.length}</div>
       <div class="note">${money(daysList.reduce((s, b) => s + b.amount, 0))} · ${daysList.reduce((s, b) => s + b.hours, 0)} hours</div></div>
     <div class="tile"><div class="label">Average per booking</div><div class="value">${money(list.length ? Math.round(revenue / list.length) : 0)}</div>
       <div class="note">Weekday ₹400/hr · weekend ₹600/hr</div></div>`;
