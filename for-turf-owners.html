@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Autosham answers your turf's phone, books the slot and tells you instantly. Try the live voice agent.">
+<title>Autosham for Turf Owners</title>
+<style>
+  :root { --green:#16A34A; --deep:#0b3d1f; --ink:#0f172a; --muted:#475569; --bg:#f6f8f5; --card:#ffffff; --line:#e2e8f0; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); }
+  .hero { position:relative; min-height:72vh; display:flex; align-items:flex-end; color:#fff;
+          background:url("img/dugout-aerial.jpg") center/cover no-repeat; }
+  .hero::before { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.45) 45%,rgba(4,30,14,.92) 100%); }
+  .hero-inner { position:relative; max-width:1000px; margin:0 auto; width:100%; padding:48px 16px 56px; }
+  .tag { display:inline-block; background:rgba(22,163,74,.9); padding:6px 12px; border-radius:999px; font-size:14px; font-weight:600; letter-spacing:.3px; }
+  h1 { margin:14px 0 10px; font-size:clamp(34px,6.5vw,60px); line-height:1.05; max-width:15ch; }
+  .hero p { margin:0 0 24px; font-size:clamp(17px,2.4vw,20px); max-width:600px; opacity:.95; line-height:1.55; }
+  .hero-facts { display:flex; flex-wrap:wrap; gap:10px; }
+  .fact { background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); backdrop-filter:blur(4px); padding:10px 14px; border-radius:10px; font-size:15px; }
+  main { max-width:1000px; margin:0 auto; padding:40px 16px 40px; }
+  h2 { font-size:26px; margin:0 0 8px; }
+  .lede { color:var(--muted); line-height:1.65; margin:0 0 22px; max-width:65ch; }
+  section { margin-bottom:44px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .card h3 { margin:0 0 6px; font-size:17px; }
+  .card p { margin:0; color:var(--muted); line-height:1.6; font-size:15px; }
+  .try { background:linear-gradient(135deg,#14532d,#16A34A); color:#fff; border-radius:16px; padding:26px 24px; }
+  .try h2 { color:#fff; }
+  .try p { margin:8px 0 0; opacity:.95; line-height:1.65; max-width:62ch; }
+  .say { display:block; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3); border-radius:10px;
+         padding:12px 14px; margin-top:16px; font-size:16px; }
+  .chat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:8px 14px; }
+  .line { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); line-height:1.55; }
+  .line:last-child { border-bottom:0; }
+  .who { flex:0 0 74px; font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; padding-top:2px; }
+  .line.bot .who { color:var(--green); }
+  .steps { counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+  .steps li { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px 14px 56px; position:relative; line-height:1.55; }
+  .steps li::before { counter-increment:s; content:counter(s); position:absolute; left:16px; top:12px; width:28px; height:28px; border-radius:50%; background:var(--green); color:#fff; display:grid; place-items:center; font-weight:700; }
+  .links { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .links a { display:block; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; text-decoration:none; color:inherit; }
+  .links a:hover { border-color:var(--green); }
+  .links strong { display:block; margin-bottom:4px; font-size:17px; }
+  .links span { color:var(--muted); font-size:15px; line-height:1.6; }
+  footer { max-width:1000px; margin:0 auto; padding:0 16px 120px; color:var(--muted); font-size:13px; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="tag">Autosham &middot; voice agent for turf</span>
+    <h1>Your turf's phone, answered every single time</h1>
+    <p>Autosham picks up the call, checks your grounds, books the slot and tells you on WhatsApp &mdash; at 7 in the morning, at 1 at night, and while you are on the field.</p>
+    <div class="hero-facts">
+      <span class="fact">Answers 24 hours</span>
+      <span class="fact">English &middot; Hindi &middot; Marathi</span>
+      <span class="fact">Cannot double-book</span>
+    </div>
+  </div>
+</section>
+
+<main>
+
+  <section>
+    <h2>The calls you are losing right now</h2>
+    <p class="lede">Most turf bookings still come by phone. Every call that rings out while you are refereeing, driving or asleep is a slot someone else fills. And when the bookings live in a notebook and three WhatsApp chats, two teams turn up for the same ground sooner or later.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Missed calls</h3>
+        <p>Evenings and weekends are when players call &mdash; exactly when you are busiest on the ground.</p>
+      </div>
+      <div class="card">
+        <h3>Double bookings</h3>
+        <p>Two people promised the same hour, and you find out when both arrive.</p>
+      </div>
+      <div class="card">
+        <h3>No record</h3>
+        <p>At month end you cannot say how many hours sold, how much collected, or what is still pending.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="try">
+    <h2>Try it yourself, right now</h2>
+    <p>Tap the green button at the bottom of this page and talk to the agent exactly as a customer would. It is not a recording &mdash; it is a real booking agent, running live for a turf in Mumbai, so it will answer with that venue's name, prices and timings.</p>
+    <span class="say">Try saying: &ldquo;I want to book cricket tomorrow, 9 PM to 11 PM.&rdquo;</span>
+    <p>Then try asking for a time that is already taken, or ask it in Hindi. Yours would be set up with your turf's name, your grounds, your rates and your rules.</p>
+  </section>
+
+  <section>
+    <h2>What it does on a call</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Takes the booking</h3>
+        <p>Name, sport, day and time, then the customer's WhatsApp number &mdash; asked only after they agree to the slot and the price.</p>
+      </div>
+      <div class="card">
+        <h3>Never promises a slot it does not have</h3>
+        <p>The booking is written to your diary first. The customer hears &ldquo;confirmed&rdquo; only when the slot is actually saved, so two people can never hold the same hour.</p>
+      </div>
+      <div class="card">
+        <h3>Knows both your grounds</h3>
+        <p>With two grounds it gives whichever is free &mdash; cricket on one, football on the other in the same hour &mdash; and only says no when both are genuinely taken.</p>
+      </div>
+      <div class="card">
+        <h3>Quotes your prices</h3>
+        <p>Weekday and weekend rates, hours multiplied correctly, advance and cancellation terms as you set them.</p>
+      </div>
+      <div class="card">
+        <h3>Applies your rules</h3>
+        <p>Opening hours, minimum notice before a slot, whole-hour bookings &mdash; it will refuse politely and offer the earliest time it can actually give.</p>
+      </div>
+      <div class="card">
+        <h3>Handles cancellations</h3>
+        <p>Finds the booking by phone number, reads it back, and cancels only after the customer clearly says yes. The hour goes back on sale immediately.</p>
+      </div>
+      <div class="card">
+        <h3>Speaks their language</h3>
+        <p>English, Hindi, Hinglish or Marathi &mdash; whichever the caller starts in, for the whole call.</p>
+      </div>
+      <div class="card">
+        <h3>Tells you instantly</h3>
+        <p>Every confirmed booking reaches you on WhatsApp or Telegram the moment it is made, with the name, number, slot, ground and amount.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>A real call, start to finish</h2>
+    <p class="lede">This is an actual booking taken by the agent, not a script.</p>
+    <div class="chat">
+      <div class="line bot"><span class="who">Agent</span><span>Hello! Welcome to the turf. May I know your name, please?</span></div>
+      <div class="line"><span class="who">Caller</span><span>Hi, Rizwan here.</span></div>
+      <div class="line bot"><span class="who">Agent</span><span>Hi Rizwan! What would you like to play today, cricket or football?</span></div>
+      <div class="line"><span class="who">Caller</span><span>Cricket.</span></div>
+      <div class="line bot"><span class="who">Agent</span><span>What date and time would you like to book?</span></div>
+      <div class="line"><span class="who">Caller</span><span>Tomorrow, 9 PM to 11 PM.</span></div>
+      <div class="line bot"><span class="who">Agent</span><span>So, cricket tomorrow, Wednesday 23rd September, 9 PM to 11 PM &mdash; that's eight hundred rupees. Shall I check and book it?</span></div>
+      <div class="line"><span class="who">Caller</span><span>Yes, book it.</span></div>
+      <div class="line bot"><span class="who">Agent</span><span>May I have your WhatsApp number?</span></div>
+      <div class="line"><span class="who">Caller</span><span>98123 00311</span></div>
+      <div class="line bot"><span class="who">Agent</span><span>Done! You're on Ground 2 &mdash; details and payment scanner coming on WhatsApp.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What you see afterwards</h2>
+    <p class="lede">Every call becomes a row in your diary: who booked, which ground, how long, how much, and whether they have paid. Today's list, tomorrow's advance bookings, revenue by day and your busiest hours &mdash; all in one page you can open on your phone.</p>
+    <div class="links">
+      <a href="owner.html">
+        <strong>See the owner dashboard &rarr;</strong>
+        <span>Bookings, revenue, payment tracking and time-of-day split, with sample data.</span>
+      </a>
+      <a href="index.html">
+        <strong>See a customer page &rarr;</strong>
+        <span>What your players would see, with the booking button on it.</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Getting your turf on it</h2>
+    <ol class="steps">
+      <li>Tell us your turf name, grounds, opening hours, weekday and weekend rates, notice period and cancellation terms.</li>
+      <li>We set up your agent with those rules and test it on real calls before you show anyone.</li>
+      <li>Put the call button on your page, share the link on Instagram and WhatsApp, or point your existing number at it.</li>
+    </ol>
+  </section>
+
+</main>
+
+<footer>
+  Autosham &mdash; voice booking agents for turf businesses. This page is a live demonstration: the call button connects to a working agent built for one venue, so it answers with that venue's name, prices and timings. Photographs are of that venue.
+</footer>
+
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://autosham-ui-production.up.railway.app/embed/autosham-widget.js?token=emb_lLm-ZjNmN3iDC8iff4sMNWoAtoT6ZGZJcbs5tnZnIGo&environment=production&apiEndpoint=https://autosham-voice-ai-agent-production.up.railway.app';
+    js.setAttribute('data-autosham-context', JSON.stringify({
+      page_url: window.location.href,
+      today: new Date().toISOString().slice(0, 10)
+    }));
+    js.async = true;
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'autosham-widget'));
+</script>
+
+</body>
+</html>
