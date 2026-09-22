@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Autosham answers your turf's phone, books the slot and tells you instantly. Try the live voice agent.">
 <title>Autosham for Turf Owners</title>
+<meta name="theme-color" content="#0b3d1f">
 <style>
   :root { --green:#16A34A; --deep:#0b3d1f; --ink:#0f172a; --muted:#475569; --bg:#f6f8f5; --card:#ffffff; --line:#e2e8f0; }
   * { box-sizing:border-box; }
@@ -12,17 +13,17 @@
   .hero { position:relative; min-height:72vh; display:flex; align-items:flex-end; color:#fff;
           background:url("img/dugout-aerial.jpg") center/cover no-repeat; }
   .hero::before { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.45) 45%,rgba(4,30,14,.92) 100%); }
-  .hero-inner { position:relative; max-width:1000px; margin:0 auto; width:100%; padding:48px 16px 56px; }
+  .hero-inner { position:relative; max-width:560px; margin:0 auto; width:100%; padding:48px 16px 56px; }
   .tag { display:inline-block; background:rgba(22,163,74,.9); padding:6px 12px; border-radius:999px; font-size:14px; font-weight:600; letter-spacing:.3px; }
   h1 { margin:14px 0 10px; font-size:clamp(34px,6.5vw,60px); line-height:1.05; max-width:15ch; }
   .hero p { margin:0 0 24px; font-size:clamp(17px,2.4vw,20px); max-width:600px; opacity:.95; line-height:1.55; }
   .hero-facts { display:flex; flex-wrap:wrap; gap:10px; }
   .fact { background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); backdrop-filter:blur(4px); padding:10px 14px; border-radius:10px; font-size:15px; }
-  main { max-width:1000px; margin:0 auto; padding:40px 16px 40px; }
+  main { max-width:560px; margin:0 auto; padding:40px 16px 40px; }
   h2 { font-size:26px; margin:0 0 8px; }
   .lede { color:var(--muted); line-height:1.65; margin:0 0 22px; max-width:65ch; }
   section { margin-bottom:44px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .grid { display:grid; grid-template-columns:1fr; gap:12px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
   .card h3 { margin:0 0 6px; font-size:17px; }
   .card p { margin:0; color:var(--muted); line-height:1.6; font-size:15px; }
@@ -39,12 +40,12 @@
   .steps { counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:12px; }
   .steps li { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px 14px 56px; position:relative; line-height:1.55; }
   .steps li::before { counter-increment:s; content:counter(s); position:absolute; left:16px; top:12px; width:28px; height:28px; border-radius:50%; background:var(--green); color:#fff; display:grid; place-items:center; font-weight:700; }
-  .links { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .links { display:grid; grid-template-columns:1fr; gap:12px; }
   .links a { display:block; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; text-decoration:none; color:inherit; }
   .links a:hover { border-color:var(--green); }
   .links strong { display:block; margin-bottom:4px; font-size:17px; }
   .links span { color:var(--muted); font-size:15px; line-height:1.6; }
-  footer { max-width:1000px; margin:0 auto; padding:0 16px 120px; color:var(--muted); font-size:13px; line-height:1.7; }
+  footer { max-width:560px; margin:0 auto; padding:0 16px 120px; color:var(--muted); font-size:13px; line-height:1.7; }
 
   @media (max-width:560px) {
     .hero { min-height:62vh; }
@@ -85,9 +86,9 @@
 
   <section class="try">
     <h2>Try it yourself, right now</h2>
-    <p>Tap the green button at the bottom of this page and talk to the agent exactly as a customer would. It is not a recording &mdash; it is a real booking agent, running live for a turf in Mumbai, so it will answer with that venue's name, prices and timings.</p>
+    <p>Tap the green button at the bottom of this page and talk to it exactly as one of your players would. This is a working agent for a sample venue, Greenfield Turf &mdash; two grounds, 6 AM to 2 AM, &#8377;400 an hour on weekdays and &#8377;600 at weekends.</p>
     <span class="say">Try saying: &ldquo;I want to book cricket tomorrow, 9 PM to 11 PM.&rdquo;</span>
-    <p>Then try asking for a time that is already taken, or ask it in Hindi. Yours would be set up with your turf's name, your grounds, your rates and your rules.</p>
+    <p>Book a slot, then call again and ask for the same hour &mdash; it will tell you it is gone and offer you another. Try it in Hindi too. Yours would carry your turf's name, your grounds, your rates and your rules.</p>
   </section>
 
   <section>
@@ -193,7 +194,7 @@
 </main>
 
 <footer>
-  Autosham &mdash; voice booking agents for turf businesses. This page is a live demonstration: the call button connects to a working agent built for one venue, so it answers with that venue's name, prices and timings. Photographs are of that venue.
+  Autosham &mdash; voice booking agents for turf businesses. This page is a live demonstration. The call button connects to a sample agent for a made-up venue called Greenfield Turf, so nothing you book here affects a real business. Photographs are of a customer venue.
 </footer>
 
 <script>
@@ -201,7 +202,7 @@
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
     js = d.createElement(s); js.id = id;
-    js.src = 'https://autosham-ui-production.up.railway.app/embed/autosham-widget.js?token=emb_lLm-ZjNmN3iDC8iff4sMNWoAtoT6ZGZJcbs5tnZnIGo&environment=production&apiEndpoint=https://autosham-voice-ai-agent-production.up.railway.app';
+    js.src = 'https://autosham-ui-production.up.railway.app/embed/autosham-widget.js?token=emb_3XqyIn2gHbYNG5ZhmSAoAw1uyBdKE3QmL9qWqRq54ps&environment=production&apiEndpoint=https://autosham-voice-ai-agent-production.up.railway.app';
     js.setAttribute('data-autosham-context', JSON.stringify({
       page_url: window.location.href,
       today: new Date().toISOString().slice(0, 10)
