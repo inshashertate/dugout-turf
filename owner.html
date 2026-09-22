@@ -68,6 +68,20 @@
   .hero-txt h1 { margin:0 0 4px; font-size:22px; letter-spacing:-.01em; }
   .hero-txt p { margin:0; font-size:13.5px; opacity:.88; }
   .card-img { width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:12px; }
+  .hero { min-height:210px; }
+  .hero-stats { position:relative; z-index:1; margin-left:auto; padding:20px 22px; display:flex; gap:22px; color:#fff; text-align:right; }
+  .hero-stats div span { display:block; font-size:12px; opacity:.8; }
+  .hero-stats div b { font-size:20px; font-weight:750; }
+  .grounds { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:840px){ .grounds { grid-template-columns:1fr; } }
+  .ground { position:relative; border-radius:14px; overflow:hidden; min-height:190px; display:flex; align-items:flex-end;
+            border:1px solid var(--line); background-size:cover; background-position:center; }
+  .ground::after { content:""; position:absolute; inset:0; background:linear-gradient(0deg,rgba(6,20,11,.92),rgba(6,20,11,.15)); }
+  .ground .g-txt { position:relative; z-index:1; padding:16px 18px; color:#fff; width:100%; }
+  .ground h3 { margin:0 0 6px; font-size:17px; }
+  .ground .g-line { display:flex; justify-content:space-between; font-size:13px; opacity:.92; }
+  .ground .g-bar { height:6px; border-radius:99px; background:rgba(255,255,255,.25); margin-top:10px; overflow:hidden; }
+  .ground .g-bar span { display:block; height:100%; background:var(--brand); border-radius:99px; }
   h2 { font-size:17px; margin:30px 0 12px; }
   .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
   .filters button { padding:8px 14px; border-radius:999px; border:1px solid var(--line);
@@ -164,6 +178,7 @@
         <h1>Good to see you, Dug Out Turf</h1>
         <p>Two floodlit grounds · open 6 AM to 2 AM · bookings taken by your voice agent</p>
       </div>
+      <div class="hero-stats" id="heroStats"></div>
     </section>
 
     <div class="filters" role="group" aria-label="Time range">
@@ -189,6 +204,9 @@
         <div id="paySplit"></div>
       </div>
     </div>
+
+    <h2>Your grounds</h2>
+    <div class="grounds" id="groundCards"></div>
 
     <h2>Usage</h2>
     <div class="cards">
@@ -395,6 +413,37 @@ function renderSplits(list) {
     `<p class="cap" style="margin-top:14px">${th} booked hours in this period.</p>`;
 }
 
+function renderHero() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const t = BOOKINGS.filter(b => sameDay(b.date, today));
+  const month = BOOKINGS.filter(b => b.date >= new Date(today.getFullYear(), today.getMonth(), 1) && b.date <= today);
+  document.getElementById("heroStats").innerHTML = `
+    <div><span>Today</span><b>${t.length} bookings</b></div>
+    <div><span>Today's revenue</span><b>${money(t.reduce((s, b) => s + b.amount, 0))}</b></div>
+    <div><span>This month</span><b>${money(month.reduce((s, b) => s + b.amount, 0))}</b></div>`;
+}
+
+function renderGrounds() {
+  const open = 20; // 6 AM to 2 AM
+  const day = BOOKINGS.filter(b => sameDay(b.date, selectedDate));
+  const imgs = { 1: "img/football-shot.jpg", 2: "img/cricket-box.jpg" };
+  document.getElementById("groundCards").innerHTML = [1, 2].map(g => {
+    const list = day.filter(b => b.ground === g);
+    const hrs = list.reduce((s, b) => s + b.hours, 0);
+    const next = list.sort((a, b) => a.start - b.start).find(b => true);
+    return `<section class="ground" style="background-image:url('${imgs[g]}')">
+      <div class="g-txt">
+        <h3>Ground ${g}</h3>
+        <div class="g-line"><span>${list.length} booking${list.length === 1 ? "" : "s"} ${dayLabel(selectedDate)}</span>
+          <span>${money(list.reduce((s, b) => s + b.amount, 0))}</span></div>
+        <div class="g-bar"><span style="width:${Math.min(100, Math.round(hrs / open * 100))}%"></span></div>
+        <div class="g-line" style="margin-top:8px">
+          <span>${hrs} of ${open} hours booked</span>
+          <span>${next ? "first slot " + hour12(next.start) : "free all day"}</span></div>
+      </div></section>`;
+  }).join("");
+}
+
 function renderUpcoming() {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const future = BOOKINGS.filter(b => b.date > today).sort((a, b) => a.date - b.date || a.start - b.start);
@@ -465,7 +514,7 @@ function renderRows() {
 
 function draw() {
   const list = BOOKINGS.filter(inRange);
-  renderTiles(list); renderRevChart(); renderHourChart(list); renderSplits(list); renderParts(list); renderUpcoming(); renderRows();
+  renderTiles(list); renderRevChart(); renderHourChart(list); renderSplits(list); renderParts(list); renderUpcoming(); renderHero(); renderGrounds(); renderRows();
 }
 
 // ---------- wiring ----------
