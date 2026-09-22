@@ -11,7 +11,7 @@
     --bg:#f4f6f4; --surface:#ffffff; --line:#e3e7e3;
     --ink:#0f1a13; --ink-2:#4a5850; --ink-3:#77837c;
     --brand:#16a34a; --brand-deep:#14532d;
-    --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a;
+    --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100; --series-5:#4a3aa7;
     --good:#1baf7a; --warn:#eda100; --bad:#e34948;
   }
   @media (prefers-color-scheme: dark) {
@@ -20,7 +20,7 @@
       --bg:#0f1210; --surface:#171b18; --line:#272d29;
       --ink:#ffffff; --ink-2:#c3c9c4; --ink-3:#8b938d;
       --brand:#22c55e; --brand-deep:#0b3d1f;
-      --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
+      --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#9085e9;
       --good:#199e70; --warn:#c98500; --bad:#e66767;
     }
   }
@@ -98,7 +98,7 @@
   .split-row { display:flex; align-items:center; gap:10px; margin:10px 0; font-size:13.5px; }
   .split-row .track { display:block; flex:1; height:10px; border-radius:999px; background:var(--bg); overflow:hidden; }
   .split-row .fill { display:block; height:100%; border-radius:999px; }
-  .split-row .num { font-variant-numeric:tabular-nums; color:var(--ink-2); min-width:92px; text-align:right; }
+  .split-row .num { font-variant-numeric:tabular-nums; color:var(--ink-2); min-width:112px; text-align:right; }
 
   table { width:100%; border-collapse:collapse; font-size:13.5px; }
   th, td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
@@ -192,6 +192,14 @@
         <div class="legend"><span><span class="swatch" style="background:var(--series-3)"></span>Bookings</span></div>
       </div>
       <div class="card">
+        <h3>Time of day</h3>
+        <p class="cap">Bookings and revenue by part of the day</p>
+        <div id="partSplit"></div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
         <img class="card-img" src="img/cricket-box.jpg" alt="Netted cricket turf under floodlights" loading="lazy">
         <h3>Grounds &amp; sports</h3>
         <p class="cap">Share of booked hours</p>
@@ -275,6 +283,8 @@ const store = {
 BOOKINGS.forEach(b => b.pay = store.get(b.id, b.pay));
 
 // ---------- helpers ----------
+const partOfDay = h => h < 12 ? "Morning" : h < 16 ? "Afternoon" : h < 20 ? "Evening" : "Night";
+const PART_COLORS = { Morning:"var(--series-4)", Afternoon:"var(--series-2)", Evening:"var(--series-1)", Night:"var(--series-5)" };
 const hour12 = h => (h % 12 === 0 ? 12 : h % 12) + (h < 12 ? " AM" : " PM");
 const sameDay = (a, b) => a.toDateString() === b.toDateString();
 const fmtDate = d => d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
@@ -369,6 +379,20 @@ function renderSplits(list) {
     `<p class="cap" style="margin-top:14px">${th} booked hours in this period.</p>`;
 }
 
+function renderParts(list) {
+  const parts = ["Morning", "Afternoon", "Evening", "Night"];
+  const hours = { Morning:"6 AM – 12 PM", Afternoon:"12 – 4 PM", Evening:"4 – 8 PM", Night:"8 PM – 2 AM" };
+  const total = list.length || 1;
+  document.getElementById("partSplit").innerHTML = parts.map(p => {
+    const rows = list.filter(b => partOfDay(b.start) === p);
+    const pct = Math.round((rows.length / total) * 100);
+    return `<div class="split-row">
+      <span style="min-width:104px">${p}<br><small style="color:var(--ink-3)">${hours[p]}</small></span>
+      <span class="track"><span class="fill" style="width:${pct}%;background:${PART_COLORS[p]}"></span></span>
+      <span class="num">${rows.length} · ${money(rows.reduce((s, b) => s + b.amount, 0))}</span></div>`;
+  }).join("") + `<p class="cap" style="margin-top:12px">${list.length} bookings in the selected period.</p>`;
+}
+
 function renderRows() {
   const day = BOOKINGS.filter(b => sameDay(b.date, selectedDate));
   const rows = [...day].sort((a, b) => a.start - b.start);
@@ -381,7 +405,7 @@ function renderRows() {
   document.getElementById("rows").innerHTML = rows.map(b => `
     <tr>
       <td>${fmtDate(b.date)}</td>
-      <td>${hour12(b.start)} – ${hour12(b.start + b.hours)}</td>
+      <td>${hour12(b.start)} – ${hour12(b.start + b.hours)}<br><small style="color:var(--ink-3)">${partOfDay(b.start)}</small></td>
       <td>${b.name}</td><td>${b.phone}</td><td>${b.sport}</td><td>Ground ${b.ground}</td>
       <td class="num">${money(b.amount)}</td>
       <td><span class="pill ${b.pay}">${b.pay === "paid" ? "Paid" : b.pay === "advance" ? "Advance" : "Unpaid"}</span>
@@ -399,7 +423,7 @@ function renderRows() {
 
 function draw() {
   const list = BOOKINGS.filter(inRange);
-  renderTiles(list); renderRevChart(); renderHourChart(list); renderSplits(list); renderRows();
+  renderTiles(list); renderRevChart(); renderHourChart(list); renderSplits(list); renderParts(list); renderRows();
 }
 
 // ---------- wiring ----------
