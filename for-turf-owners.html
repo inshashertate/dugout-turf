@@ -115,6 +115,24 @@
     .hero::after, .hero-inner > *, .hero-facts .fact, .chat.in .line { animation:none !important; }
     .reveal, .chat .line { opacity:1 !important; transform:none !important; transition:none !important; }
   }
+
+  .calc-box { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  .calc-box label { display:block; font-size:14px; color:var(--muted); margin-bottom:10px; }
+  input[type=range] { width:100%; accent-color:var(--green); height:26px; }
+  .calc-row { display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:15px; color:var(--muted); margin:2px 0 14px; flex-wrap:wrap; }
+  .calc-row #missedOut { font-weight:700; color:var(--ink); }
+  #rate { width:72px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; font:inherit; font-size:15px; }
+  .calc-figure { display:flex; align-items:baseline; gap:4px; font-weight:800; color:var(--deep); font-size:clamp(38px,11vw,54px); line-height:1; }
+  .calc-figure .rupee { font-size:.6em; }
+  .calc-note { margin:8px 0 0; color:var(--muted); font-size:14px; line-height:1.5; }
+  .phone { background:#0b141a; border-radius:18px; padding:14px; border:1px solid #06202b; }
+  .msg { background:#005c4b; color:#fff; border-radius:12px 12px 12px 4px; padding:12px 14px; display:grid; gap:4px; font-size:15px; line-height:1.45; max-width:92%; }
+  .msg strong { font-size:15px; }
+  .msg-time { font-size:12px; opacity:.75; margin-top:4px; }
+  .faq details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
+  .faq summary { cursor:pointer; font-weight:600; line-height:1.45; }
+  .faq details[open] summary { color:var(--green); }
+  .faq p { margin:10px 0 0; color:var(--muted); line-height:1.6; font-size:15px; }
 </style>
 </head>
 <body>
@@ -237,6 +255,42 @@
     </div>
   </section>
 
+
+  <section class="calc">
+    <h2>What missed calls cost you</h2>
+    <p class="lede">Move the slider to how many calls you miss in a busy week &mdash; while you are on the ground, driving, or asleep.</p>
+    <div class="calc-box">
+      <label for="missed">Calls you miss in a week</label>
+      <input id="missed" type="range" min="1" max="25" value="6">
+      <div class="calc-row"><span id="missedOut">6 calls</span><span id="rateWrap">at <input id="rate" type="number" min="100" max="3000" step="50" value="400"> &#8377;/hour</span></div>
+      <div class="calc-figure"><span class="rupee">&#8377;</span><span id="loss">0</span></div>
+      <p class="calc-note">slipping away every month &mdash; counting a two-hour slot per call</p>
+    </div>
+  </section>
+
+  <section class="alert-demo">
+    <h2>You find out the moment it happens</h2>
+    <p class="lede">Every booking reaches your phone straight away, whether you were near it or not.</p>
+    <div class="phone">
+      <div class="msg">
+        <strong>New booking &mdash; Greenfield Turf</strong>
+        <span>Rizwan &middot; 93736 58344</span>
+        <span>Cricket &middot; Wed 23 Sep, 9 PM to 11 PM</span>
+        <span>Field 1 &middot; 2 hours &middot; &#8377;1,200</span>
+        <span class="msg-time">booked just now by the voice agent</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>What turf owners ask</h2>
+    <details><summary>What if two people call at the same time?</summary><p>Both get answered. The agent takes as many calls at once as come in, and the diary decides who gets the slot &mdash; the second caller is told honestly and offered another time.</p></details>
+    <details><summary>Will it understand Hindi or Marathi?</summary><p>Yes. It replies in whatever the caller starts with &mdash; English, Hindi, Hinglish or Marathi &mdash; for the whole call.</p></details>
+    <details><summary>Can it give away a slot I have already blocked?</summary><p>No. Nothing is confirmed until it is written into the diary, and the diary refuses a slot that is already taken on both grounds.</p></details>
+    <details><summary>Do I have to change my phone number?</summary><p>No. Keep your number and point it at the agent, or start with the call button on your page and Instagram.</p></details>
+    <details><summary>What about cancellations and advance bookings?</summary><p>It finds the booking from the caller's number, reads it back, and cancels only when they clearly agree &mdash; the hour goes straight back on sale. Advance bookings for next week work the same as tonight.</p></details>
+  </section>
+
   <section>
     <h2>Getting your turf on it</h2>
     <ol class="steps">
@@ -256,7 +310,7 @@
 <script>
   (function () {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var targets = document.querySelectorAll('main h2, .lede, .card, .links a, .steps li, .chat, .try, footer');
+    var targets = document.querySelectorAll('main h2, .lede, .card, .links a, .steps li, .chat, .try, .calc-box, .phone, .faq details, footer');
     if (reduce || !('IntersectionObserver' in window)) {
       targets.forEach(function (el) { el.classList.add('in'); });
       document.querySelectorAll('.chat .line').forEach(function (l) { l.style.opacity = 1; l.style.transform = 'none'; });
