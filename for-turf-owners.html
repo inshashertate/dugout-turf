@@ -4,10 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Autosham answers your turf's phone, books the slot and tells you instantly. Try the live voice agent.">
-<title>Autosham for Turf Owners</title>
+<title>autosham.ai &mdash; voice agent for turf</title>
 <meta name="theme-color" content="#0b3d1f">
+<link rel="icon" type="image/png" href="img/autosham-mark.png">
+<link rel="apple-touch-icon" href="img/autosham-mark.png">
+<meta property="og:title" content="autosham.ai &mdash; voice agent for turf">
+<meta property="og:description" content="Autosham answers your turf's phone, books the slot and tells you instantly. Try the live voice agent.">
+<meta property="og:image" content="img/autosham-logo.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <style>
-  :root { --green:#16A34A; --deep:#0b3d1f; --ink:#0f172a; --muted:#475569; --bg:#f6f8f5; --card:#ffffff; --line:#e2e8f0; }
+  :root { --green:#16A34A; --deep:#0b3d1f; --ink:#0f172a; --muted:#475569; --bg:#f6f8f5; --card:#ffffff; --line:#e2e8f0; --brand:#22C55E; }
+  .brand { position:absolute; z-index:4; top:16px; left:16px; display:flex; align-items:center; gap:10px;
+           animation:riseIn .8s cubic-bezier(.2,.7,.3,1) both; }
+  .brand img { width:40px; height:40px; border-radius:12px; display:block; box-shadow:0 3px 14px rgba(0,0,0,.45); }
+  .brand .wordmark { font-size:23px; font-weight:700; letter-spacing:-.02em; line-height:1; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.55); }
+  .brand .wordmark i { font-style:normal; color:var(--brand); }
+  .foot-brand { display:flex; align-items:center; gap:9px; margin:0 0 14px; }
+  .foot-brand img { width:30px; height:30px; border-radius:9px; display:block; }
+  .foot-brand .wordmark { font-size:18px; font-weight:700; letter-spacing:-.02em; color:var(--ink); }
+  .foot-brand .wordmark i { font-style:normal; color:var(--green); }
   * { box-sizing:border-box; }
   html { scroll-behavior:smooth; }
   body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); }
@@ -20,7 +36,7 @@
               transform-origin:50% 55%; animation:kenburns 24s ease-out both; will-change:transform; }
   .shot.late img { animation-direction:reverse; }
   .shot::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.18) 100%); }
-  .shot figcaption { position:absolute; left:10px; top:12px; z-index:3; color:#fff; font-size:13px; font-weight:700;
+  .shot figcaption { position:absolute; left:10px; top:70px; z-index:3; color:#fff; font-size:13px; font-weight:700;
                      letter-spacing:.4px; text-transform:uppercase; background:rgba(22,163,74,.92); padding:5px 10px; border-radius:999px;
                      animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) .8s both; }
 
@@ -86,10 +102,10 @@
   @keyframes blink { 0%,100% { opacity:.25; } 50% { opacity:1; } }
 
   .hero-inner > * { animation:riseIn .7s cubic-bezier(.2,.7,.3,1) both; }
-  .hero-inner > .tag { animation-delay:.05s; }
-  .hero-inner > h1 { animation-delay:.18s; }
-  .hero-inner > p { animation-delay:.32s; }
-  .hero-inner > .hero-facts { animation-delay:.46s; }
+  .hero-inner > .tag { animation-delay:.12s; }
+  .hero-inner > h1 { animation-delay:.26s; }
+  .hero-inner > p { animation-delay:.40s; }
+  .hero-inner > .hero-facts { animation-delay:.54s; }
   .hero-facts .fact { animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) both; }
   .hero-facts .fact:nth-child(1) { animation-delay:.52s; }
   .hero-facts .fact:nth-child(2) { animation-delay:.62s; }
@@ -112,7 +128,7 @@
   .typing i:nth-child(3) { animation-delay:.36s; }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero::after, .hero-inner > *, .hero-facts .fact, .chat.in .line { animation:none !important; }
+    .hero::after, .brand, .hero-inner > *, .hero-facts .fact, .chat.in .line { animation:none !important; }
     .reveal, .chat .line { opacity:1 !important; transform:none !important; transition:none !important; }
   }
 
@@ -130,11 +146,15 @@
 
 <section class="hero">
   <div class="hero-media">
-    <figure class="shot"><img src="img/hero-cricket.jpg" alt="A batsman playing box cricket on artificial turf"><figcaption>Cricket</figcaption></figure>
-    <figure class="shot late"><img src="img/hero-football.jpg" alt="A five-a-side football match on floodlit artificial turf"><figcaption>Football</figcaption></figure>
+    <figure class="shot"><img src="img/hero-cricket.jpg" alt="A batsman playing box cricket on artificial turf"></figure>
+    <figure class="shot late"><img src="img/hero-football.jpg" alt="A five-a-side football match on floodlit artificial turf"></figure>
+  </div>
+  <div class="brand">
+    <img src="img/autosham-mark.png" alt="autosham.ai">
+    <span class="wordmark">autosham<i>.ai</i></span>
   </div>
   <div class="hero-inner">
-    <span class="tag">Autosham &middot; voice agent for turf</span>
+    <span class="tag">Voice agent for turf grounds</span>
     <h1>Your turf's phone, answered every single time</h1>
     <p>Autosham picks up the call, checks your grounds, books the slot and tells you on WhatsApp &mdash; at 7 in the morning, at 1 at night, and while you are on the field.</p>
     <div class="hero-facts">
@@ -283,6 +303,7 @@
 </main>
 
 <footer>
+  <div class="foot-brand"><img src="img/autosham-mark.png" alt=""><span class="wordmark">autosham<i>.ai</i></span></div>
   Autosham &mdash; voice booking agents for turf businesses. This page is a live demonstration. The call button connects to a sample agent for a made-up venue called Greenfield Turf, so nothing you book here affects a real business. Photographs are of a customer venue.
 </footer>
 
