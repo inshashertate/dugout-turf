@@ -62,18 +62,20 @@
   main { max-width:580px; margin:0 auto; padding:44px 16px 40px;
          background:radial-gradient(760px 420px at 50% -40px, rgba(34,197,94,.13), rgba(244,247,244,0) 70%); }
   section { margin-bottom:52px; }
+  main > section + section:not(.stats):not(.try) { border-top:1px solid var(--line); padding-top:34px; }
+  main > section.stats + section:not(.stats):not(.try) { border-top:0; padding-top:0; }
   .eyebrow { display:flex; align-items:center; gap:9px; font-size:11.5px; font-weight:800; letter-spacing:.16em;
-             text-transform:uppercase; color:var(--green); margin:0 0 10px; }
+             text-transform:uppercase; color:var(--green); margin:0 0 9px; }
   .eyebrow::before { content:""; width:24px; height:2px; border-radius:2px; background:linear-gradient(90deg,var(--brand),rgba(34,197,94,0)); }
   h2 { font-size:clamp(23px,5.8vw,31px); line-height:1.15; letter-spacing:-.025em; font-weight:800; margin:0 0 10px; }
-  .lede { color:var(--muted); line-height:1.68; margin:0 0 22px; font-size:16px; }
+  .lede { color:var(--muted); line-height:1.66; margin:0 0 20px; font-size:15.5px; }
 
   /* ---------- cards ---------- */
   .grid { display:grid; grid-template-columns:1fr; gap:12px; }
   .card { display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
           border-radius:16px; padding:18px; box-shadow:var(--shadow); }
   .card h3 { margin:0 0 5px; font-size:16.5px; font-weight:700; letter-spacing:-.01em; }
-  .card p { margin:0; color:var(--muted); line-height:1.6; font-size:14.5px; }
+  .card p { margin:0; color:var(--muted); line-height:1.58; font-size:14px; }
   .ico { flex:0 0 44px; width:44px; height:44px; border-radius:13px; display:grid; place-items:center; color:var(--green);
          background:linear-gradient(140deg,rgba(34,197,94,.18),rgba(22,163,74,.06)); font-size:19px; font-weight:800; }
   .ico svg { width:21px; height:21px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
@@ -194,7 +196,8 @@
     .hero p { font-size:16px; margin-bottom:16px; }
     .fact { font-size:13px; padding:8px 11px; }
     main { padding:30px 16px 30px; }
-    section { margin-bottom:38px; }
+    section { margin-bottom:34px; }
+    main > section + section:not(.stats):not(.try) { padding-top:28px; }
     .lede { font-size:15px; }
     .card { padding:15px; gap:12px; }
     .ico { flex-basis:38px; width:38px; height:38px; border-radius:11px; }
@@ -399,7 +402,7 @@
         <span class="bar" id="bar"><span id="fill"></span></span>
         <span class="t" id="tlabel">0:00</span>
       </div>
-      <audio id="callAudio" preload="none" src="audio/demo-call.mp3"></audio>
+      <audio id="callAudio" preload="metadata" src="audio/demo-call.mp3"></audio>
       <div class="chat scroll" id="chat">
         <div class="line bot" data-t="0"><span class="who">Agent</span>Hello! Welcome to Greenfield Turf. May I know your name, please?</div>
         <div class="line" data-t="4.6"><span class="who">Caller</span>My name is Insha.</div>
