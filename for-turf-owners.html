@@ -22,6 +22,7 @@
           --shadow:0 1px 2px rgba(11,18,32,.04), 0 10px 28px rgba(11,18,32,.06);
           --shadow-lg:0 22px 54px rgba(11,18,32,.14); }
   * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
   html { scroll-behavior:smooth; }
   body { margin:0; background:var(--bg); color:var(--ink);
          font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -62,8 +63,8 @@
   main { max-width:580px; margin:0 auto; padding:44px 16px 40px;
          background:radial-gradient(760px 420px at 50% -40px, rgba(34,197,94,.13), rgba(244,247,244,0) 70%); }
   section { margin-bottom:52px; }
-  main > section + section:not(.stats):not(.try) { border-top:1px solid var(--line); padding-top:34px; }
-  main > section.stats + section:not(.stats):not(.try) { border-top:0; padding-top:0; }
+  main > section + section:not(.stats) { border-top:1px solid var(--line); padding-top:34px; }
+  main > section.stats + section:not(.stats) { border-top:0; padding-top:0; }
   .eyebrow { display:flex; align-items:center; gap:9px; font-size:11.5px; font-weight:800; letter-spacing:.16em;
              text-transform:uppercase; color:var(--green); margin:0 0 9px; }
   .eyebrow::before { content:""; width:24px; height:2px; border-radius:2px; background:linear-gradient(90deg,var(--brand),rgba(34,197,94,0)); }
@@ -92,27 +93,17 @@
   .stat + .stat { border-left:1px solid rgba(255,255,255,.14); }
 
   /* ---------- try panel ---------- */
-  .try { position:relative; overflow:hidden; border-radius:22px; padding:26px 22px; color:#fff;
-         background:linear-gradient(140deg,#08351c 0%,#0f6a35 62%,#17954a 100%); box-shadow:0 20px 44px rgba(8,53,28,.30); }
-  .try::after { content:""; position:absolute; width:300px; height:300px; right:-120px; top:-150px; border-radius:50%;
-                background:radial-gradient(circle,rgba(255,255,255,.26),transparent 62%); }
-  .try > * { position:relative; z-index:1; }
-  .try h2 { color:#fff; margin-bottom:8px; }
-  .try .eyebrow { color:#c7f7d8; }
-  .try .eyebrow::before { background:linear-gradient(90deg,#fff,rgba(255,255,255,0)); }
-  .try p { margin:10px 0 0; opacity:.95; line-height:1.66; font-size:15.5px; }
-  .say { display:flex; align-items:center; gap:11px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.34);
-         border-radius:14px; padding:13px 15px; margin-top:16px; font-size:15.5px; font-weight:600; }
-  .say svg { flex:0 0 20px; width:20px; height:20px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  .cta { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; margin-top:18px; padding:16px 20px;
-         border:0; border-radius:14px; background:#fff; color:#0b3d1f; font:inherit; font-size:16.5px; font-weight:800;
-         letter-spacing:-.01em; cursor:pointer; box-shadow:0 10px 24px rgba(0,0,0,.22); transition:transform .18s ease, box-shadow .18s ease; }
-  .cta:hover { transform:translateY(-2px); box-shadow:0 14px 30px rgba(0,0,0,.26); }
+  .cta { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:17px 20px;
+         border:0; border-radius:15px; color:#fff; font:inherit; font-size:16.5px; font-weight:800; letter-spacing:-.01em;
+         cursor:pointer; background:linear-gradient(140deg,var(--brand),var(--green-d));
+         box-shadow:0 12px 26px rgba(22,163,74,.32); transition:transform .18s ease, box-shadow .18s ease; }
+  .cta:hover { transform:translateY(-2px); box-shadow:0 16px 32px rgba(22,163,74,.38); }
   .cta:active { transform:translateY(0); }
   .cta svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  .cta.live { background:#0b2b17; color:#fff; box-shadow:0 0 0 0 rgba(255,255,255,.4); animation:glow 2s ease-in-out infinite; }
-  .cta.busy { opacity:.75; }
-  .cta-note { display:block; margin-top:10px; font-size:13px; opacity:.8; text-align:center; }
+  .cta.live { background:linear-gradient(140deg,#0b2b17,#14532d); animation:glow 2s ease-in-out infinite; }
+  .cta.busy { opacity:.8; }
+  .cta-note { display:block; margin:11px 2px 0; font-size:12.5px; color:var(--muted); line-height:1.55; text-align:center; }
+  #yourCall { margin-top:20px; }
 
   /* ---------- call transcript ---------- */
   .call { border-radius:22px; padding:14px; border:1px solid #16301f; box-shadow:var(--shadow-lg);
@@ -136,6 +127,7 @@
   .bar span { display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,var(--brand),#7ee2a4); }
   .player .t { font-size:12.5px; font-weight:700; color:#9fb3a6; font-variant-numeric:tabular-nums; }
   .chat { display:grid; gap:8px; padding:14px 2px 2px; max-height:none; }
+  .chat:empty { display:none; }
   .chat.scroll { max-height:370px; overflow-y:auto; scrollbar-width:thin; padding-right:6px;
                  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 90%,transparent 100%);
                  mask-image:linear-gradient(180deg,#000 0,#000 90%,transparent 100%); }
@@ -202,13 +194,11 @@
     .fact { font-size:13px; padding:8px 11px; }
     main { padding:30px 16px 30px; }
     section { margin-bottom:34px; }
-    main > section + section:not(.stats):not(.try) { padding-top:28px; }
+    main > section + section:not(.stats) { padding-top:28px; }
     .lede { font-size:15px; }
     .card { padding:15px; gap:12px; }
     .ico { flex-basis:38px; width:38px; height:38px; border-radius:11px; }
     .ico svg { width:19px; height:19px; }
-    .try { padding:22px 18px; }
-    .say { font-size:14.5px; }
     .steps li { padding:15px 16px 15px 56px; }
     footer { padding-bottom:130px; }
   }
@@ -233,7 +223,6 @@
   .reveal { opacity:0; transform:translateY(30px) scale(.985); transition:opacity .75s ease, transform .75s cubic-bezier(.22,.8,.28,1); }
   .reveal.in { opacity:1; transform:none; }
   h2.reveal:not(.in), .eyebrow.reveal:not(.in) { transform:translateY(22px); }
-  .try.reveal:not(.in) { transform:translateY(34px) scale(.97); }
   .card.reveal, .links a.reveal, .steps li.reveal { transition-duration:.55s; }
   .card, .links a { transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease, opacity .6s ease; }
   .card:hover, .links a:hover { transform:translateY(-3px); box-shadow:0 14px 30px rgba(11,18,32,.10); }
@@ -241,13 +230,11 @@
   .stats.in .stat:nth-child(2) { animation-delay:.12s; }
   .stats.in .stat:nth-child(3) { animation-delay:.24s; }
 
-  .try.in .say { animation:glow 2.8s ease-in-out 1.2s infinite; }
-  .chat .line { opacity:0; transform:translateY(10px); }
-  .call.in .line { animation:riseIn .45s cubic-bezier(.2,.7,.3,1) both; }
+  .chat .line { animation:riseIn .35s cubic-bezier(.2,.7,.3,1) both; }
 
   @media (prefers-reduced-motion: reduce) {
     .brand, .hero-inner > *, .hero-facts .fact, .call.in .line, .stats.in .stat, .try.in .say, .shot img { animation:none !important; }
-    .reveal, .chat .line { opacity:1 !important; transform:none !important; transition:none !important; }
+    .reveal { opacity:1 !important; transform:none !important; transition:none !important; }
   }
 </style>
 </head>
@@ -276,43 +263,34 @@
 
 <main>
 
-  <section class="try">
+  <section class="demo">
     <span class="eyebrow">Live demo</span>
-    <h2>Try it yourself, right now</h2>
-    <p>Press the button below and talk to it exactly as one of your players would. This is a working agent for a sample venue, Greenfield Turf &mdash; two grounds, 6 AM to 2 AM, &#8377;400 an hour on weekdays and &#8377;600 at weekends.</p>
+    <h2>Talk to the AI voice agent</h2>
+    <p class="lede">This is a sample turf &mdash; two grounds, 6 AM to 2 AM, &#8377;400 an hour on weekdays and &#8377;600 at weekends. Speak to it exactly as one of your players would.</p>
     <button class="cta" id="talkBtn" type="button">
       <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
       <span id="talkLabel">Talk to the booking agent</span>
     </button>
-    <span class="cta-note">Uses your phone's microphone &middot; the call is recorded in your browser so you can play it back</span>
-    <span class="say">
-      <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-      Try saying: &ldquo;I want to book cricket tomorrow, 9 PM to 11 PM.&rdquo;
-    </span>
-    <p>Book a slot, then call again and ask for the same hour &mdash; it will tell you it is gone and offer you another. Try it in Hindi too. Yours would carry your turf's name, grounds, rates and rules.</p>
-  </section>
+    <span class="cta-note">When you hang up, the transcript and the recording of your call appear here. Both stay in this browser and are gone when you leave the page.</span>
 
-  <section id="yourCall" class="yours" hidden>
-    <span class="eyebrow">Your call</span>
-    <h2 id="yourTitle">Your call, live</h2>
-    <p class="lede" id="yourLede">Every word as it is spoken. Hang up and the recording appears here too.</p>
-    <div class="call">
-      <div class="call-top">
-        <span class="call-av">a</span>
-        <span><b>Greenfield Turf</b><small id="yourSub">on the call now</small></span>
-        <span class="call-live" id="yourChip"><i></i>Live</span>
-        <span class="call-len" id="yourLen" hidden>0:00</span>
+    <div id="yourCall" hidden>
+      <div class="call">
+        <div class="call-top">
+          <span class="call-av">a</span>
+          <span><b>Greenfield Turf</b><small>your call, just now</small></span>
+          <span class="call-len" id="yourLen" hidden>0:00</span>
+        </div>
+        <div class="player" id="yourPlayerRow" hidden>
+          <button class="play" id="yourPlay" type="button" aria-label="Play your call">
+            <svg viewBox="0 0 24 24" id="yourIcon"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <span class="bar" id="yourBar"><span id="yourFill"></span></span>
+          <span class="t" id="yourT">0:00</span>
+        </div>
+        <audio id="yourAudio"></audio>
+        <div class="chat scroll" id="yourChat"></div>
+        <p class="yours-note">Kept in this browser only, and replaced the next time you call.</p>
       </div>
-      <div class="player" id="yourPlayerRow" hidden>
-        <button class="play" id="yourPlay" type="button" aria-label="Play your call">
-          <svg viewBox="0 0 24 24" id="yourIcon"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-        <span class="bar" id="yourBar"><span id="yourFill"></span></span>
-        <span class="t" id="yourT">0:00</span>
-      </div>
-      <audio id="yourAudio"></audio>
-      <div class="chat scroll" id="yourChat"></div>
-      <p class="yours-note" id="yourStatus">Listening&hellip;</p>
     </div>
   </section>
 
@@ -415,39 +393,6 @@
   </section>
 
   <section>
-    <span class="eyebrow">Recorded call</span>
-    <h2>Hear a real call</h2>
-    <p class="lede">A booking taken by this demo agent, exactly as it happened. Press play &mdash; the transcript follows along.</p>
-    <div class="call">
-      <div class="call-top">
-        <span class="call-av">a</span>
-        <span><b>Greenfield Turf</b><small>booking call &middot; 24 Sep</small></span>
-        <span class="call-len">0:42</span>
-      </div>
-      <div class="player">
-        <button class="play" id="playBtn" type="button" aria-label="Play the recording">
-          <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-        <span class="bar" id="bar"><span id="fill"></span></span>
-        <span class="t" id="tlabel">0:00</span>
-      </div>
-      <audio id="callAudio" preload="metadata" src="audio/demo-call.mp3"></audio>
-      <div class="chat scroll" id="chat">
-        <div class="line bot" data-t="0"><span class="who">Agent</span>Hello! Welcome to Greenfield Turf. May I know your name, please?</div>
-        <div class="line" data-t="4.6"><span class="who">Caller</span>My name is Insha.</div>
-        <div class="line bot" data-t="6.8"><span class="who">Agent</span>Hi Insha! What would you like to play today, cricket or football?</div>
-        <div class="line" data-t="11.2"><span class="who">Caller</span>Book a slot for me.</div>
-        <div class="line" data-t="16.5"><span class="who">Caller</span>I want to play cricket tomorrow, 6 PM to 9 PM.</div>
-        <div class="line bot" data-t="18.7"><span class="who">Agent</span>Thursday 24th September, 6 PM to 9 PM is twelve hundred rupees. May I have your WhatsApp number? Our team will send booking details.</div>
-        <div class="note" data-t="28.2">the caller's number and the agent's read-back are cut out of this recording</div>
-        <div class="line bot" data-t="29"><span class="who">Agent</span>Done, your booking is confirmed on Field 1 for twelve hundred rupees. Anything else I can help with?</div>
-        <div class="line" data-t="35.1"><span class="who">Caller</span>No thanks.</div>
-        <div class="line bot" data-t="38.3"><span class="who">Agent</span>Thanks for calling Greenfield Turf &mdash; call us anytime!</div>
-      </div>
-    </div>
-  </section>
-
-  <section>
     <span class="eyebrow">Afterwards</span>
     <h2>What you see afterwards</h2>
     <p class="lede">Every call becomes a row in your diary: who booked, which ground, how long, how much, and whether they have paid. Today's list, tomorrow's advance bookings, revenue by day and your busiest hours &mdash; all in one page you can open on your phone.</p>
@@ -519,7 +464,7 @@
 <script>
   (function () {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var targets = document.querySelectorAll('main h2, main .eyebrow, .lede, .card, .links a, .steps li, .call, .try, .stats, .phone, .faq details, footer');
+    var targets = document.querySelectorAll('main h2, main .eyebrow, .lede, .card, .links a, .steps li, .stats, .phone, .faq details, footer');
     if (reduce || !('IntersectionObserver' in window)) {
       targets.forEach(function (el) { el.classList.add('in'); });
       document.querySelectorAll('.chat .line').forEach(function (l) { l.style.opacity = 1; l.style.transform = 'none'; });
@@ -627,8 +572,6 @@
     };
   }
 
-  wirePlayer({ audio: 'callAudio', play: 'playBtn', icon: 'playIcon', bar: 'bar', fill: 'fill',
-               time: 'tlabel', chat: 'chat', fallback: 42.3 });
   var yourPlayer = wirePlayer({ audio: 'yourAudio', play: 'yourPlay', icon: 'yourIcon', bar: 'yourBar',
                                 fill: 'yourFill', time: 'yourT', chat: 'yourChat' });
 
@@ -657,8 +600,7 @@
         Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
       document.getElementById('yourT').textContent = '0:00';
       document.getElementById('yourFill').style.width = '0%';
-      section.removeAttribute('hidden');
-      section.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+      if (window.__autoshamShowResult) window.__autoshamShowResult();
       document.getElementById('yourPlayerRow').removeAttribute('hidden');
       var len = document.getElementById('yourLen');
       len.removeAttribute('hidden');
@@ -791,33 +733,22 @@
     if (!btn) return;
     var live = false;
 
-    function openLivePanel() {
-      var sec = document.getElementById('yourCall');
-      window.__autoshamLive.reset();
-      document.getElementById('yourTitle').textContent = 'Your call, live';
-      document.getElementById('yourLede').textContent =
-        'Every word as it is spoken. Hang up and the recording appears here too.';
-      document.getElementById('yourSub').textContent = 'on the call now';
-      document.getElementById('yourChip').removeAttribute('hidden');
-      document.getElementById('yourLen').setAttribute('hidden', '');
+    // the transcript is collected quietly while the call runs; the panel
+    // appears only once the caller has hung up
+    function armLivePanel() {
+      document.getElementById('yourCall').setAttribute('hidden', '');
       document.getElementById('yourPlayerRow').setAttribute('hidden', '');
-      document.getElementById('yourStatus').textContent = 'Listening\u2026';
-      var first = sec.hasAttribute('hidden');
-      sec.removeAttribute('hidden');
-      sec.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
-      if (first) setTimeout(function () { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
+      document.getElementById('yourLen').setAttribute('hidden', '');
+      window.__autoshamLive.reset();
     }
 
-    function closeLivePanel() {
-      document.getElementById('yourTitle').textContent = 'Your call, just now';
-      document.getElementById('yourLede').textContent =
-        'The call you just had, word for word. Press play and the transcript follows along.';
-      document.getElementById('yourSub').textContent = 'your test call';
-      document.getElementById('yourChip').setAttribute('hidden', '');
-      document.getElementById('yourStatus').textContent = window.__autoshamLive.empty()
-        ? 'Nothing was picked up that time \u2014 check the microphone and try again.'
-        : 'Kept in your browser only, and replaced the next time you call.';
+    function showResult() {
+      var sec = document.getElementById('yourCall');
+      if (window.__autoshamLive.empty() || !sec.hasAttribute('hidden')) return;
+      sec.removeAttribute('hidden');
+      setTimeout(function () { sec.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 250);
     }
+    window.__autoshamShowResult = showResult;
 
     function set(text, cls) {
       label.textContent = text;
@@ -833,7 +764,7 @@
       try {
         w.start && w.start();
         window.__autoshamCapture && window.__autoshamCapture.begin();
-        openLivePanel();
+        armLivePanel();
       } catch (e) { set('Talk to the booking agent', ''); }
     });
     var tries = 0, poll = setInterval(function () {
@@ -844,7 +775,7 @@
       function finished() {
         live = false; set('Talk to the booking agent', '');
         capture && capture.finish();
-        closeLivePanel();
+        showResult();
       }
       w.onCallConnected && w.onCallConnected(function () {
         live = true; set('On the call — tap to end', 'live');
