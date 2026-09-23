@@ -1,0 +1,22 @@
+name: Keep the demo diary clear
+
+# Prospects testing the voice agent leave a booking behind. Ten minutes later
+# it is cleared, so the next turf owner always finds his slot free.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: demo-diary
+  cancel-in-progress: false
+
+jobs:
+  clear:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cancel demo bookings older than ten minutes
+        env:
+          AUTOSHAM_API_KEY: ${{ secrets.AUTOSHAM_API_KEY }}
+        run: python .github/scripts/demo_reset.py
