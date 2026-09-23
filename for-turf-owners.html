@@ -140,6 +140,7 @@
   .chat.scroll::-webkit-scrollbar-track { background:transparent; }
   .chat.scroll { scrollbar-color:rgba(255,255,255,.18) transparent; }
   .line.now { outline:2px solid rgba(34,197,94,.65); outline-offset:1px; }
+  .yours-note { margin:13px 4px 2px; font-size:12.5px; line-height:1.55; color:#8aa394; }
   .note { justify-self:center; max-width:100%; background:none; color:#7f9788; font-size:12.5px; font-style:italic; padding:4px 0; }
   .line { max-width:87%; padding:10px 13px; border-radius:15px; font-size:14.8px; line-height:1.5;
           background:#1c2733; color:#e7edf5; justify-self:end; border-bottom-right-radius:5px; }
@@ -279,12 +280,34 @@
       <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
       <span id="talkLabel">Talk to the booking agent</span>
     </button>
-    <span class="cta-note">Uses your phone's microphone &middot; takes about a minute</span>
+    <span class="cta-note">Uses your phone's microphone &middot; the call is recorded in your browser so you can play it back</span>
     <span class="say">
       <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
       Try saying: &ldquo;I want to book cricket tomorrow, 9 PM to 11 PM.&rdquo;
     </span>
     <p>Book a slot, then call again and ask for the same hour &mdash; it will tell you it is gone and offer you another. Try it in Hindi too. Yours would carry your turf's name, grounds, rates and rules.</p>
+  </section>
+
+  <section id="yourCall" class="yours" hidden>
+    <span class="eyebrow">Your call</span>
+    <h2>Your call, just now</h2>
+    <p class="lede">Recorded here in your browser so you can hear how it handled you. Nothing is uploaded, and it is replaced the moment you call again.</p>
+    <div class="call">
+      <div class="call-top">
+        <span class="call-av">a</span>
+        <span><b>Greenfield Turf</b><small>your test call</small></span>
+        <span class="call-len" id="yourLen">0:00</span>
+      </div>
+      <div class="player">
+        <button class="play" id="yourPlay" type="button" aria-label="Play your call">
+          <svg viewBox="0 0 24 24" id="yourIcon"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <span class="bar" id="yourBar"><span id="yourFill"></span></span>
+        <span class="t" id="yourT">0:00</span>
+      </div>
+      <audio id="yourAudio"></audio>
+      <p class="yours-note">Every call also writes a booking into the diary and a full written transcript on the owner's side &mdash; that is what you would see as the turf owner.</p>
+    </div>
   </section>
 
   <section>
@@ -551,21 +574,21 @@
 
 
 <script>
-  /* ---- recorded call: play/pause, progress and transcript sync ---- */
-  (function () {
-    var audio = document.getElementById('callAudio');
-    if (!audio) return;
-    var btn = document.getElementById('playBtn'), icon = document.getElementById('playIcon');
-    var bar = document.getElementById('bar'), fill = document.getElementById('fill');
-    var label = document.getElementById('tlabel'), chat = document.getElementById('chat');
-    var lines = [].slice.call(chat.querySelectorAll('[data-t]'));
+  /* ---- audio players: play/pause, progress, and transcript sync ---- */
+  function wirePlayer(ids) {
+    var audio = document.getElementById(ids.audio);
+    if (!audio) return null;
+    var btn = document.getElementById(ids.play), icon = document.getElementById(ids.icon);
+    var bar = document.getElementById(ids.bar), fill = document.getElementById(ids.fill);
+    var label = document.getElementById(ids.time), chat = ids.chat ? document.getElementById(ids.chat) : null;
+    var lines = chat ? [].slice.call(chat.querySelectorAll('[data-t]')) : [];
     var PLAY = 'M8 5v14l11-7z', PAUSE = 'M7 5h4v14H7zM13 5h4v14h-4z';
+    var known = ids.fallback || 0;
 
     function fmt(t) { t = Math.max(0, t | 0); return Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2); }
+    function dur() { var d = audio.duration; return (d && isFinite(d) && d > 0) ? d : known; }
 
-    btn.addEventListener('click', function () {
-      if (audio.paused) { audio.play(); } else { audio.pause(); }
-    });
+    btn.addEventListener('click', function () { if (audio.paused) { audio.play(); } else { audio.pause(); } });
     audio.addEventListener('play', function () { icon.firstElementChild.setAttribute('d', PAUSE); });
     audio.addEventListener('pause', function () { icon.firstElementChild.setAttribute('d', PLAY); });
     audio.addEventListener('ended', function () {
@@ -573,24 +596,102 @@
       lines.forEach(function (l) { l.classList.remove('now'); });
     });
     audio.addEventListener('timeupdate', function () {
-      var d = audio.duration || 42.3, t = audio.currentTime;
-      fill.style.width = (t / d * 100) + '%';
+      var d = dur() || 1, t = audio.currentTime;
+      fill.style.width = Math.min(100, t / d * 100) + '%';
       label.textContent = fmt(t);
+      if (!lines.length) return;
       var current = null;
       lines.forEach(function (l) { if (parseFloat(l.dataset.t) <= t + 0.15) current = l; });
       if (current && !current.classList.contains('now')) {
         lines.forEach(function (l) { l.classList.remove('now'); });
         current.classList.add('now');
-        if (chat.classList.contains('scroll')) {
-          var top = current.offsetTop - chat.offsetTop - 90;
-          chat.scrollTo({ top: top, behavior: 'smooth' });
+        if (chat && chat.classList.contains('scroll')) {
+          chat.scrollTo({ top: current.offsetTop - chat.offsetTop - 90, behavior: 'smooth' });
         }
       }
     });
     bar.addEventListener('click', function (e) {
-      var r = bar.getBoundingClientRect();
-      audio.currentTime = (e.clientX - r.left) / r.width * (audio.duration || 42.3);
+      var r = bar.getBoundingClientRect(), d = dur();
+      if (d) audio.currentTime = (e.clientX - r.left) / r.width * d;
     });
+    return { audio: audio, setLength: function (seconds) { known = seconds; } };
+  }
+
+  wirePlayer({ audio: 'callAudio', play: 'playBtn', icon: 'playIcon', bar: 'bar', fill: 'fill',
+               time: 'tlabel', chat: 'chat', fallback: 42.3 });
+  var yourPlayer = wirePlayer({ audio: 'yourAudio', play: 'yourPlay', icon: 'yourIcon', bar: 'yourBar',
+                                fill: 'yourFill', time: 'yourT' });
+
+  /* ---- record the visitor's own call, in their browser only ---- */
+  (function () {
+    var section = document.getElementById('yourCall');
+    if (!section || !yourPlayer || typeof MediaRecorder === 'undefined') return;
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    var ctx, dest, rec, chunks, micIn, botIn, startedAt, poll, url;
+
+    function pickMime() {
+      var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'];
+      for (var i = 0; i < types.length; i++) { if (MediaRecorder.isTypeSupported(types[i])) return types[i]; }
+      return '';
+    }
+
+    function publish() {
+      var seconds = (Date.now() - startedAt) / 1000;
+      if (!chunks.length || seconds < 3) return;
+      if (url) URL.revokeObjectURL(url);
+      url = URL.createObjectURL(new Blob(chunks, { type: chunks[0].type || 'audio/webm' }));
+      yourPlayer.audio.src = url;
+      yourPlayer.setLength(seconds);
+      document.getElementById('yourLen').textContent =
+        Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
+      document.getElementById('yourT').textContent = '0:00';
+      document.getElementById('yourFill').style.width = '0%';
+      var first = section.hasAttribute('hidden');
+      section.removeAttribute('hidden');
+      section.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+      if (first) setTimeout(function () { section.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500);
+    }
+
+    window.__autoshamCapture = {
+      begin: function () {
+        this.finish(true);
+        try {
+          ctx = new AudioCtx();
+          dest = ctx.createMediaStreamDestination();
+          chunks = [];
+          var type = pickMime();
+          rec = new MediaRecorder(dest.stream, type ? { mimeType: type } : undefined);
+          rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+          rec.onstop = publish;
+          startedAt = Date.now();
+          rec.start();
+        } catch (e) { return; }
+
+        // the widget hands over the microphone and the agent's audio a moment
+        // after the call connects, so attach each one as it appears
+        var tries = 0;
+        poll = setInterval(function () {
+          var st = window.AutoshamWidget && window.AutoshamWidget.getState();
+          if (!st || !ctx) return;
+          try {
+            if (!micIn && st.stream) { micIn = ctx.createMediaStreamSource(st.stream); micIn.connect(dest); }
+            if (!botIn && st.audioElement && st.audioElement.srcObject) {
+              botIn = ctx.createMediaStreamSource(st.audioElement.srcObject); botIn.connect(dest);
+            }
+          } catch (e) {}
+          if ((micIn && botIn) || ++tries > 60) { clearInterval(poll); poll = null; }
+        }, 200);
+      },
+      finish: function (quiet) {
+        if (poll) { clearInterval(poll); poll = null; }
+        micIn = botIn = null;
+        if (rec && rec.state !== 'inactive') { if (quiet) rec.onstop = null; rec.stop(); }
+        rec = null;
+        if (ctx && ctx.state !== 'closed') { try { ctx.close(); } catch (e) {} }
+        ctx = null;
+      }
+    };
   }());
 
   /* ---- CTA: start a live call with the demo agent ---- */
@@ -615,10 +716,14 @@
       var w = window.AutoshamWidget;
       if (!w) { if (++tries > 40) clearInterval(poll); return; }
       clearInterval(poll);
-      w.onCallConnected && w.onCallConnected(function () { live = true; set('On the call — tap to end', 'live'); });
-      w.onCallEnd && w.onCallEnd(function () { live = false; set('Talk to the booking agent', ''); });
-      w.onCallDisconnected && w.onCallDisconnected(function () { live = false; set('Talk to the booking agent', ''); });
-      w.onError && w.onError(function () { live = false; set('Talk to the booking agent', ''); });
+      var capture = window.__autoshamCapture;
+      w.onCallConnected && w.onCallConnected(function () {
+        live = true; set('On the call — tap to end', 'live');
+        capture && capture.begin();
+      });
+      w.onCallEnd && w.onCallEnd(function () { live = false; set('Talk to the booking agent', ''); capture && capture.finish(); });
+      w.onCallDisconnected && w.onCallDisconnected(function () { live = false; set('Talk to the booking agent', ''); capture && capture.finish(); });
+      w.onError && w.onError(function () { live = false; set('Talk to the booking agent', ''); capture && capture.finish(true); });
     }, 300);
   }());
 </script>
