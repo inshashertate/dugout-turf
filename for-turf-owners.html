@@ -40,21 +40,18 @@
   .foot-brand .wordmark i { font-style:normal; color:var(--green); }
 
   /* ---------- hero ---------- */
-  .hero { position:relative; min-height:82vh; display:flex; align-items:flex-end; color:#fff; background:#04140a; overflow:hidden; }
-  .hero::before { content:""; position:absolute; inset:0; z-index:2;
-                  background:linear-gradient(180deg,rgba(0,0,0,.10) 0%,rgba(3,22,11,.35) 42%,rgba(3,22,11,.88) 72%,rgba(3,22,11,.97) 100%); }
-  .hero-media { position:absolute; inset:0; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:3px; }
-  .shot { position:relative; margin:0; overflow:hidden; height:100%; background:#04140a; }
-  .shot img { width:100%; height:100%; object-fit:cover; object-position:50% 42%; display:block;
-              transform-origin:50% 55%; animation:kenburns 24s ease-out both; will-change:transform; }
-  .shot.late img { animation-direction:reverse; }
-  .shot::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.18) 100%); }
-  .hero-inner { position:relative; z-index:3; max-width:580px; margin:0 auto; width:100%; padding:48px 16px 44px; }
+  .hero { position:relative; color:#fff; overflow:hidden;
+          background:linear-gradient(165deg,#04170c 0%,#0a3d20 46%,#12703c 100%); }
+  .hero::before { content:""; position:absolute; z-index:1; width:520px; height:520px; right:-190px; top:-230px;
+                  border-radius:50%; background:radial-gradient(circle,rgba(34,197,94,.34),transparent 62%); }
+  .hero::after { content:""; position:absolute; z-index:1; left:0; right:0; bottom:0; height:120px;
+                 background:linear-gradient(180deg,rgba(4,23,12,0),rgba(4,23,12,.35)); }
+  .hero-inner { position:relative; z-index:3; max-width:580px; margin:0 auto; width:100%; padding:84px 16px 40px; }
   .tag { display:inline-flex; align-items:center; gap:8px; background:rgba(22,163,74,.92); padding:7px 14px; border-radius:999px;
          font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; box-shadow:0 6px 18px rgba(0,0,0,.28); }
   h1 { margin:16px 0 10px; font-size:clamp(34px,6.5vw,58px); line-height:1.04; letter-spacing:-.025em; font-weight:800; max-width:15ch; }
-  .hero p { margin:0 0 24px; font-size:clamp(17px,2.4vw,20px); max-width:600px; opacity:.94; line-height:1.55; }
-  .hero-facts { display:flex; flex-wrap:wrap; gap:9px; }
+  .hero p { margin:0 0 22px; font-size:clamp(16px,2.3vw,19px); max-width:600px; opacity:.93; line-height:1.55; }
+  .hero-facts { display:flex; flex-wrap:wrap; gap:9px; margin-top:22px; }
   .fact { display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.26);
           backdrop-filter:blur(6px); padding:9px 13px; border-radius:11px; font-size:14px; font-weight:600; }
   .fact svg { width:15px; height:15px; stroke:var(--brand); fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
@@ -103,7 +100,8 @@
   .cta.live { background:linear-gradient(140deg,#0b2b17,#14532d); animation:glow 2s ease-in-out infinite; }
   .cta.busy { opacity:.8; }
   .cta-note { display:block; margin:11px 2px 0; font-size:12.5px; color:var(--muted); line-height:1.55; text-align:center; }
-  .demo { background:var(--card); border:1px solid var(--line); border-radius:22px; padding:18px; box-shadow:var(--shadow); }
+  .demo { background:var(--card); border:1px solid rgba(255,255,255,.14); border-radius:20px; padding:16px;
+          box-shadow:0 24px 50px rgba(2,14,7,.34); color:var(--ink); }
   #yourCall { margin-top:16px; }
 
   /* ---------- call transcript ---------- */
@@ -188,8 +186,7 @@
   footer { max-width:580px; margin:0 auto; padding:0 16px 120px; color:var(--muted); font-size:13px; line-height:1.7; }
 
   @media (max-width:560px) {
-    .hero { min-height:80vh; }
-    .hero-inner { padding:32px 16px 30px; }
+    .hero-inner { padding:72px 16px 28px; }
     h1 { font-size:31px; max-width:none; }
     .hero p { font-size:16px; margin-bottom:16px; }
     .fact { font-size:13px; padding:8px 11px; }
@@ -222,7 +219,6 @@
   }
 
   /* ---------- motion ---------- */
-  @keyframes kenburns { from { transform:scale(1.02); } to { transform:scale(1.16); } }
   @keyframes riseIn { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
   @keyframes popIn { from { opacity:0; transform:scale(.82); } to { opacity:1; transform:scale(1); } }
   @keyframes glow { 0%,100% { box-shadow:0 0 0 0 rgba(255,255,255,.35); } 50% { box-shadow:0 0 0 12px rgba(255,255,255,0); } }
@@ -232,11 +228,12 @@
   .hero-inner > .tag { animation-delay:.12s; }
   .hero-inner > h1 { animation-delay:.26s; }
   .hero-inner > p { animation-delay:.40s; }
-  .hero-inner > .hero-facts { animation-delay:.54s; }
+  .hero-inner > .demo { animation-delay:.52s; }
+  .hero-inner > .hero-facts { animation-delay:.66s; }
   .hero-facts .fact { animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) both; }
-  .hero-facts .fact:nth-child(1) { animation-delay:.52s; }
-  .hero-facts .fact:nth-child(2) { animation-delay:.62s; }
-  .hero-facts .fact:nth-child(3) { animation-delay:.72s; }
+  .hero-facts .fact:nth-child(1) { animation-delay:.64s; }
+  .hero-facts .fact:nth-child(2) { animation-delay:.74s; }
+  .hero-facts .fact:nth-child(3) { animation-delay:.84s; }
 
   .reveal { opacity:0; transform:translateY(30px) scale(.985); transition:opacity .75s ease, transform .75s cubic-bezier(.22,.8,.28,1); }
   .reveal.in { opacity:1; transform:none; }
@@ -251,7 +248,7 @@
   .chat .line { animation:riseIn .35s cubic-bezier(.2,.7,.3,1) both; }
 
   @media (prefers-reduced-motion: reduce) {
-    .brand, .hero-inner > *, .hero-facts .fact, .call.in .line, .stats.in .stat, .try.in .say, .shot img { animation:none !important; }
+    .brand, .hero-inner > *, .hero-facts .fact, .chat .line, .stats.in .stat { animation:none !important; }
     .reveal { opacity:1 !important; transform:none !important; transition:none !important; }
   }
 </style>
@@ -259,10 +256,6 @@
 <body>
 
 <section class="hero">
-  <div class="hero-media">
-    <figure class="shot"><img src="img/hero-cricket.jpg" alt="A batsman playing box cricket on artificial turf"></figure>
-    <figure class="shot late"><img src="img/hero-football.jpg" alt="A five-a-side football match on floodlit artificial turf"></figure>
-  </div>
   <div class="brand">
     <img src="img/autosham-mark.png" alt="autosham.ai">
     <span class="wordmark">autosham<i>.ai</i></span>
@@ -270,7 +263,34 @@
   <div class="hero-inner">
     <span class="tag">Voice agent for turf grounds</span>
     <h1>Your turf's phone, answered every single time</h1>
-    <p>Autosham picks up the call, checks your grounds, books the slot and tells you on WhatsApp &mdash; at 7 in the morning, at 1 at night, and while you are on the field.</p>
+    <p>Press the button and book a slot with your voice, the way one of your players would. It answers at 7 in the morning and at 1 at night, checks your grounds and writes the booking down.</p>
+      <div class="demo">
+      <button class="cta" id="talkBtn" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        <span id="talkLabel">Talk to the booking agent</span>
+      </button>
+      <span class="cta-note">When you hang up, the transcript and the recording of your call appear here. Both stay in this browser and are gone when you leave the page.</span>
+
+      <div id="yourCall" hidden>
+        <div class="call">
+          <div class="call-top">
+            <span class="call-av">a</span>
+            <span><b>Greenfield Turf</b><small>your call, just now</small></span>
+            <span class="call-len" id="yourLen" hidden>0:00</span>
+          </div>
+          <div class="player" id="yourPlayerRow" hidden>
+            <button class="play" id="yourPlay" type="button" aria-label="Play your call">
+              <svg viewBox="0 0 24 24" id="yourIcon"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <span class="bar" id="yourBar"><span id="yourFill"></span></span>
+            <span class="t" id="yourT">0:00</span>
+          </div>
+          <audio id="yourAudio"></audio>
+          <div class="chat scroll" id="yourChat"></div>
+          <p class="yours-note">Kept in this browser only, and replaced the next time you call.</p>
+        </div>
+      </div>
+      </div>
     <div class="hero-facts">
       <span class="fact"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Answers 24 hours</span>
       <span class="fact"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg>English &middot; Hindi &middot; Marathi</span>
@@ -280,34 +300,6 @@
 </section>
 
 <main>
-
-  <section class="demo">
-    <button class="cta" id="talkBtn" type="button">
-      <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-      <span id="talkLabel">Talk to the booking agent</span>
-    </button>
-    <span class="cta-note">When you hang up, the transcript and the recording of your call appear here. Both stay in this browser and are gone when you leave the page.</span>
-
-    <div id="yourCall" hidden>
-      <div class="call">
-        <div class="call-top">
-          <span class="call-av">a</span>
-          <span><b>Greenfield Turf</b><small>your call, just now</small></span>
-          <span class="call-len" id="yourLen" hidden>0:00</span>
-        </div>
-        <div class="player" id="yourPlayerRow" hidden>
-          <button class="play" id="yourPlay" type="button" aria-label="Play your call">
-            <svg viewBox="0 0 24 24" id="yourIcon"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-          <span class="bar" id="yourBar"><span id="yourFill"></span></span>
-          <span class="t" id="yourT">0:00</span>
-        </div>
-        <audio id="yourAudio"></audio>
-        <div class="chat scroll" id="yourChat"></div>
-        <p class="yours-note">Kept in this browser only, and replaced the next time you call.</p>
-      </div>
-    </div>
-  </section>
 
   <section>
     <span class="eyebrow">The problem</span>
@@ -495,19 +487,6 @@
         }
       });
     }, 4000);
-    var media = document.querySelector('.hero-media');
-    if (media) {
-      var ticking = false;
-      window.addEventListener('scroll', function () {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(function () {
-          var y = Math.min(window.scrollY, 600);
-          media.style.translate = '0 ' + (y * 0.14) + 'px';
-          ticking = false;
-        });
-      }, { passive: true });
-    }
     window.addEventListener('pageshow', function () {
       targets.forEach(function (el) {
         var r = el.getBoundingClientRect();
