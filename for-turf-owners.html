@@ -306,7 +306,8 @@
         <span class="t" id="yourT">0:00</span>
       </div>
       <audio id="yourAudio"></audio>
-      <p class="yours-note">Every call also writes a booking into the diary and a full written transcript on the owner's side &mdash; that is what you would see as the turf owner.</p>
+      <div class="chat scroll" id="yourChat" hidden></div>
+      <p class="yours-note" id="yourStatus">Every call also writes a booking into the diary and a full written transcript on the owner's side &mdash; that is what you would see as the turf owner.</p>
     </div>
   </section>
 
@@ -614,13 +615,17 @@
       var r = bar.getBoundingClientRect(), d = dur();
       if (d) audio.currentTime = (e.clientX - r.left) / r.width * d;
     });
-    return { audio: audio, setLength: function (seconds) { known = seconds; } };
+    return {
+      audio: audio,
+      setLength: function (seconds) { known = seconds; },
+      refreshLines: function () { if (chat) lines = [].slice.call(chat.querySelectorAll('[data-t]')); }
+    };
   }
 
   wirePlayer({ audio: 'callAudio', play: 'playBtn', icon: 'playIcon', bar: 'bar', fill: 'fill',
                time: 'tlabel', chat: 'chat', fallback: 42.3 });
   var yourPlayer = wirePlayer({ audio: 'yourAudio', play: 'yourPlay', icon: 'yourIcon', bar: 'yourBar',
-                                fill: 'yourFill', time: 'yourT' });
+                                fill: 'yourFill', time: 'yourT', chat: 'yourChat' });
 
   /* ---- record the visitor's own call, in their browser only ---- */
   (function () {
@@ -699,6 +704,64 @@
     };
   }());
 
+  /* ---- the written transcript of the visitor's own call ----
+     Needs a small endpoint that holds the Autosham API key and returns
+     { lines: [{ role, text, at }] } for a run of the demo workflow. Leave the
+     URL empty and the page simply shows the recording on its own. ---- */
+  var TRANSCRIPT_API = '';
+
+  function showTranscript(runId) {
+    var box = document.getElementById('yourChat'), status = document.getElementById('yourStatus');
+    if (!box || !status) return;
+    box.setAttribute('hidden', '');
+    box.innerHTML = '';
+    if (!TRANSCRIPT_API || !runId) {
+      status.innerHTML = 'Every call also writes a booking into the diary and a full written transcript on the ' +
+                         'owner\u2019s side \u2014 that is what you would see as the turf owner.';
+      return;
+    }
+    status.textContent = 'Writing up the transcript of your call\u2026';
+
+    var tries = 0;
+    (function attempt() {
+      fetch(TRANSCRIPT_API + (TRANSCRIPT_API.indexOf('?') < 0 ? '?' : '&') + 'run=' + runId, { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          var lines = data && data.lines;
+          if (!lines || !lines.length) throw new Error('not ready');
+          render(lines);
+        })
+        .catch(function () {
+          if (++tries > 20) {
+            status.textContent = 'The written transcript of this call is waiting in the owner\u2019s dashboard.';
+            return;
+          }
+          setTimeout(attempt, 3000);
+        });
+    }());
+
+    function render(lines) {
+      var first = null;
+      lines.forEach(function (l) {
+        var at = Date.parse(l.at);
+        if (first === null && !isNaN(at)) first = at;
+        var offset = (!isNaN(at) && first !== null) ? Math.max(0, (at - first) / 1000) : 0;
+        var el = document.createElement('div');
+        el.className = 'line' + (l.role === 'assistant' ? ' bot' : '');
+        el.setAttribute('data-t', offset.toFixed(1));
+        var who = document.createElement('span');
+        who.className = 'who';
+        who.textContent = l.role === 'assistant' ? 'Agent' : 'You';
+        el.appendChild(who);
+        el.appendChild(document.createTextNode(l.text));
+        box.appendChild(el);
+      });
+      box.removeAttribute('hidden');
+      yourPlayer.refreshLines();
+      status.textContent = 'Word for word, as the agent heard it. Press play and it follows along.';
+    }
+  }
+
   /* ---- CTA: start a live call with the demo agent ---- */
   (function () {
     var btn = document.getElementById('talkBtn'), label = document.getElementById('talkLabel');
@@ -725,12 +788,19 @@
       if (!w) { if (++tries > 40) clearInterval(poll); return; }
       clearInterval(poll);
       var capture = window.__autoshamCapture;
+      function finished() {
+        live = false; set('Talk to the booking agent', '');
+        var st = w.getState && w.getState();
+        var runId = st && st.workflowRunId;
+        capture && capture.finish();
+        setTimeout(function () { showTranscript(runId); }, 1500);
+      }
       w.onCallConnected && w.onCallConnected(function () {
         live = true; set('On the call — tap to end', 'live');
         capture && capture.begin();
       });
-      w.onCallEnd && w.onCallEnd(function () { live = false; set('Talk to the booking agent', ''); capture && capture.finish(); });
-      w.onCallDisconnected && w.onCallDisconnected(function () { live = false; set('Talk to the booking agent', ''); capture && capture.finish(); });
+      w.onCallEnd && w.onCallEnd(finished);
+      w.onCallDisconnected && w.onCallDisconnected(finished);
       w.onError && w.onError(function () { live = false; set('Talk to the booking agent', ''); capture && capture.finish(true); });
     }, 300);
   }());
