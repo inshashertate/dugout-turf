@@ -13,20 +13,32 @@
 <meta property="og:image" content="img/autosham-logo.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root { --green:#16A34A; --deep:#0b3d1f; --ink:#0f172a; --muted:#475569; --bg:#f6f8f5; --card:#ffffff; --line:#e2e8f0; --brand:#22C55E; }
+  :root { --green:#16A34A; --green-d:#0f7a38; --brand:#22C55E; --deep:#08301a;
+          --ink:#0b1220; --muted:#55627a; --bg:#f4f7f4; --card:#ffffff; --line:#e6ebe6;
+          --shadow:0 1px 2px rgba(11,18,32,.04), 0 10px 28px rgba(11,18,32,.06);
+          --shadow-lg:0 22px 54px rgba(11,18,32,.14); }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+         -webkit-font-smoothing:antialiased; }
+
+  /* ---------- brand ---------- */
   .brand { position:absolute; z-index:4; top:16px; left:16px; display:flex; align-items:center; gap:10px;
            animation:riseIn .8s cubic-bezier(.2,.7,.3,1) both; }
   .brand img { width:40px; height:40px; border-radius:12px; display:block; box-shadow:0 3px 14px rgba(0,0,0,.45); }
-  .brand .wordmark { font-size:23px; font-weight:700; letter-spacing:-.02em; line-height:1; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.55); }
+  .brand .wordmark { font-size:23px; font-weight:800; letter-spacing:-.02em; line-height:1; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.55); }
   .brand .wordmark i { font-style:normal; color:var(--brand); }
   .foot-brand { display:flex; align-items:center; gap:9px; margin:0 0 14px; }
   .foot-brand img { width:30px; height:30px; border-radius:9px; display:block; }
-  .foot-brand .wordmark { font-size:18px; font-weight:700; letter-spacing:-.02em; color:var(--ink); }
+  .foot-brand .wordmark { font-size:18px; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
   .foot-brand .wordmark i { font-style:normal; color:var(--green); }
-  * { box-sizing:border-box; }
-  html { scroll-behavior:smooth; }
-  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); }
+
+  /* ---------- hero ---------- */
   .hero { position:relative; min-height:82vh; display:flex; align-items:flex-end; color:#fff; background:#04140a; overflow:hidden; }
   .hero::before { content:""; position:absolute; inset:0; z-index:2;
                   background:linear-gradient(180deg,rgba(0,0,0,.10) 0%,rgba(3,22,11,.35) 42%,rgba(3,22,11,.88) 72%,rgba(3,22,11,.97) 100%); }
@@ -36,69 +48,144 @@
               transform-origin:50% 55%; animation:kenburns 24s ease-out both; will-change:transform; }
   .shot.late img { animation-direction:reverse; }
   .shot::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.18) 100%); }
-  .shot figcaption { position:absolute; left:10px; top:70px; z-index:3; color:#fff; font-size:13px; font-weight:700;
-                     letter-spacing:.4px; text-transform:uppercase; background:rgba(22,163,74,.92); padding:5px 10px; border-radius:999px;
-                     animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) .8s both; }
+  .hero-inner { position:relative; z-index:3; max-width:580px; margin:0 auto; width:100%; padding:48px 16px 44px; }
+  .tag { display:inline-flex; align-items:center; gap:8px; background:rgba(22,163,74,.92); padding:7px 14px; border-radius:999px;
+         font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; box-shadow:0 6px 18px rgba(0,0,0,.28); }
+  h1 { margin:16px 0 10px; font-size:clamp(34px,6.5vw,58px); line-height:1.04; letter-spacing:-.025em; font-weight:800; max-width:15ch; }
+  .hero p { margin:0 0 24px; font-size:clamp(17px,2.4vw,20px); max-width:600px; opacity:.94; line-height:1.55; }
+  .hero-facts { display:flex; flex-wrap:wrap; gap:9px; }
+  .fact { display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.26);
+          backdrop-filter:blur(6px); padding:9px 13px; border-radius:11px; font-size:14px; font-weight:600; }
+  .fact svg { width:15px; height:15px; stroke:var(--brand); fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
 
-  .hero-inner { position:relative; z-index:3; max-width:560px; margin:0 auto; width:100%; padding:48px 16px 44px; }
-  .tag { display:inline-block; background:rgba(22,163,74,.9); padding:6px 12px; border-radius:999px; font-size:14px; font-weight:600; letter-spacing:.3px; }
-  h1 { margin:14px 0 10px; font-size:clamp(34px,6.5vw,60px); line-height:1.05; max-width:15ch; }
-  .hero p { margin:0 0 24px; font-size:clamp(17px,2.4vw,20px); max-width:600px; opacity:.95; line-height:1.55; }
-  .hero-facts { display:flex; flex-wrap:wrap; gap:10px; }
-  .fact { background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); backdrop-filter:blur(4px); padding:10px 14px; border-radius:10px; font-size:15px; }
-  main { max-width:560px; margin:0 auto; padding:40px 16px 40px; }
-  h2 { font-size:26px; margin:0 0 8px; }
-  .lede { color:var(--muted); line-height:1.65; margin:0 0 22px; max-width:65ch; }
-  section { margin-bottom:44px; }
+  /* ---------- layout ---------- */
+  main { max-width:580px; margin:0 auto; padding:44px 16px 40px;
+         background:radial-gradient(760px 420px at 50% -40px, rgba(34,197,94,.13), rgba(244,247,244,0) 70%); }
+  section { margin-bottom:52px; }
+  .eyebrow { display:flex; align-items:center; gap:9px; font-size:11.5px; font-weight:800; letter-spacing:.16em;
+             text-transform:uppercase; color:var(--green); margin:0 0 10px; }
+  .eyebrow::before { content:""; width:24px; height:2px; border-radius:2px; background:linear-gradient(90deg,var(--brand),rgba(34,197,94,0)); }
+  h2 { font-size:clamp(23px,5.8vw,31px); line-height:1.15; letter-spacing:-.025em; font-weight:800; margin:0 0 10px; }
+  .lede { color:var(--muted); line-height:1.68; margin:0 0 22px; font-size:16px; }
+
+  /* ---------- cards ---------- */
   .grid { display:grid; grid-template-columns:1fr; gap:12px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
-  .card h3 { margin:0 0 6px; font-size:17px; }
-  .card p { margin:0; color:var(--muted); line-height:1.6; font-size:15px; }
-  .try { background:linear-gradient(135deg,#14532d,#16A34A); color:#fff; border-radius:16px; padding:26px 24px; }
-  .try h2 { color:#fff; }
-  .try p { margin:8px 0 0; opacity:.95; line-height:1.65; max-width:62ch; }
-  .say { display:block; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3); border-radius:10px;
-         padding:12px 14px; margin-top:16px; font-size:16px; }
-  .chat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:8px 14px; }
-  .line { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); line-height:1.55; }
-  .line:last-child { border-bottom:0; }
-  .who { flex:0 0 74px; font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; padding-top:2px; }
-  .line.bot .who { color:var(--green); }
-  .steps { counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:12px; }
-  .steps li { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px 14px 56px; position:relative; line-height:1.55; }
-  .steps li::before { counter-increment:s; content:counter(s); position:absolute; left:16px; top:12px; width:28px; height:28px; border-radius:50%; background:var(--green); color:#fff; display:grid; place-items:center; font-weight:700; }
+  .card { display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+          border-radius:16px; padding:18px; box-shadow:var(--shadow); }
+  .card h3 { margin:0 0 5px; font-size:16.5px; font-weight:700; letter-spacing:-.01em; }
+  .card p { margin:0; color:var(--muted); line-height:1.6; font-size:14.5px; }
+  .ico { flex:0 0 44px; width:44px; height:44px; border-radius:13px; display:grid; place-items:center; color:var(--green);
+         background:linear-gradient(140deg,rgba(34,197,94,.18),rgba(22,163,74,.06)); font-size:19px; font-weight:800; }
+  .ico svg { width:21px; height:21px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+  .card.warn .ico { color:#d2541f; background:linear-gradient(140deg,rgba(234,118,42,.20),rgba(239,68,68,.07)); }
+
+  /* ---------- stats band ---------- */
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; border-radius:20px; padding:22px 12px; color:#fff;
+           background:linear-gradient(135deg,#072a19 0%,#0e4a2a 55%,#13703f 100%); box-shadow:var(--shadow-lg); position:relative; overflow:hidden; }
+  .stats::after { content:""; position:absolute; width:280px; height:280px; right:-110px; top:-140px; border-radius:50%;
+                  background:radial-gradient(circle,rgba(34,197,94,.30),transparent 65%); }
+  .stat { text-align:center; position:relative; z-index:1; padding:0 4px; }
+  .stat b { display:block; font-size:clamp(19px,5.4vw,25px); font-weight:800; letter-spacing:-.02em; }
+  .stat span { display:block; margin-top:5px; font-size:11.5px; line-height:1.4; opacity:.76; font-weight:500; }
+  .stat + .stat { border-left:1px solid rgba(255,255,255,.14); }
+
+  /* ---------- try panel ---------- */
+  .try { position:relative; overflow:hidden; border-radius:22px; padding:26px 22px; color:#fff;
+         background:linear-gradient(135deg,#0d6b33 0%,#16A34A 58%,#22C55E 100%); box-shadow:0 22px 48px rgba(13,107,51,.30); }
+  .try::after { content:""; position:absolute; width:300px; height:300px; right:-120px; top:-150px; border-radius:50%;
+                background:radial-gradient(circle,rgba(255,255,255,.26),transparent 62%); }
+  .try > * { position:relative; z-index:1; }
+  .try h2 { color:#fff; margin-bottom:8px; }
+  .try .eyebrow { color:#c7f7d8; }
+  .try .eyebrow::before { background:linear-gradient(90deg,#fff,rgba(255,255,255,0)); }
+  .try p { margin:10px 0 0; opacity:.95; line-height:1.66; font-size:15.5px; }
+  .say { display:flex; align-items:center; gap:11px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.34);
+         border-radius:14px; padding:13px 15px; margin-top:16px; font-size:15.5px; font-weight:600; }
+  .say svg { flex:0 0 20px; width:20px; height:20px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* ---------- call transcript ---------- */
+  .call { border-radius:22px; padding:14px; border:1px solid #16301f; box-shadow:var(--shadow-lg);
+          background:linear-gradient(180deg,#0e1f16 0%,#0a1410 100%); }
+  .call-top { display:flex; align-items:center; gap:11px; padding:4px 6px 13px; border-bottom:1px solid rgba(255,255,255,.09); color:#fff; }
+  .call-av { width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:15px; color:#06200f;
+             background:linear-gradient(140deg,var(--brand),#0f7a38); }
+  .call-top b { font-size:15px; font-weight:700; letter-spacing:-.01em; }
+  .call-top small { display:block; font-size:11.5px; opacity:.55; font-weight:500; margin-top:1px; }
+  .call-live { margin-left:auto; display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:800;
+               letter-spacing:.12em; text-transform:uppercase; color:#93edb5; }
+  .call-live i { width:7px; height:7px; border-radius:50%; background:var(--brand); animation:blink 1.5s ease-in-out infinite; }
+  .chat { display:grid; gap:8px; padding:14px 2px 2px; }
+  .line { max-width:87%; padding:10px 13px; border-radius:15px; font-size:14.8px; line-height:1.5;
+          background:#1c2733; color:#e7edf5; justify-self:end; border-bottom-right-radius:5px; }
+  .line.bot { background:#14381f; color:#e9fbf0; justify-self:start; border-bottom-right-radius:15px; border-bottom-left-radius:5px; }
+  .who { display:block; font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; opacity:.5; margin-bottom:3px; }
+  .line.bot .who { color:#8ce8ad; opacity:.85; }
+
+  /* ---------- link cards ---------- */
   .links { display:grid; grid-template-columns:1fr; gap:12px; }
-  .links a { display:block; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; text-decoration:none; color:inherit; }
-  .links a:hover { border-color:var(--green); }
-  .links strong { display:block; margin-bottom:4px; font-size:17px; }
-  .links span { color:var(--muted); font-size:15px; line-height:1.6; }
-  footer { max-width:560px; margin:0 auto; padding:0 16px 120px; color:var(--muted); font-size:13px; line-height:1.7; }
+  .links a { display:flex; align-items:center; gap:14px; background:var(--card); border:1px solid var(--line); border-radius:16px;
+             padding:18px 20px; text-decoration:none; color:inherit; box-shadow:var(--shadow); }
+  .links a:hover { border-color:rgba(22,163,74,.45); }
+  .links .txt { flex:1; }
+  .links strong { display:block; margin-bottom:4px; font-size:16.5px; font-weight:700; letter-spacing:-.01em; }
+  .links .txt span { display:block; color:var(--muted); font-size:14.5px; line-height:1.6; }
+  .links .arrow { flex:0 0 34px; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; color:#fff;
+                  background:linear-gradient(140deg,var(--brand),var(--green-d)); font-weight:800; transition:transform .25s ease; }
+  .links a:hover .arrow { transform:translateX(3px); }
+
+  /* ---------- whatsapp alert ---------- */
+  .phone { background:#0b141a; border-radius:20px; padding:14px; border:1px solid #06202b; box-shadow:var(--shadow-lg); }
+  .wa-top { display:flex; align-items:center; gap:10px; padding:2px 4px 12px; border-bottom:1px solid rgba(255,255,255,.08); color:#e9edef; }
+  .wa-av { width:32px; height:32px; border-radius:50%; background:#25D366; display:grid; place-items:center; color:#06200f; font-weight:800; font-size:14px; }
+  .wa-top b { font-size:14.5px; font-weight:700; }
+  .wa-top small { display:block; font-size:11px; opacity:.5; margin-top:1px; }
+  .msg { background:#005c4b; color:#fff; border-radius:14px 14px 14px 5px; padding:12px 14px; display:grid; gap:4px;
+         font-size:14.8px; line-height:1.45; max-width:94%; margin-top:14px; }
+  .msg strong { font-size:15px; font-weight:700; }
+  .msg-time { font-size:11.5px; opacity:.7; margin-top:4px; }
+
+  /* ---------- faq ---------- */
+  .faq details { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:10px; box-shadow:var(--shadow); }
+  .faq summary { list-style:none; cursor:pointer; font-weight:700; font-size:15.5px; line-height:1.45; display:flex; gap:12px; align-items:flex-start; }
+  .faq summary::-webkit-details-marker { display:none; }
+  .faq summary::after { content:"+"; margin-left:auto; color:var(--green); font-size:21px; line-height:.9; font-weight:700; }
+  .faq details[open] summary { color:var(--green); }
+  .faq details[open] summary::after { content:"\2212"; }
+  .faq p { margin:10px 0 0; color:var(--muted); line-height:1.65; font-size:14.8px; }
+
+  /* ---------- steps ---------- */
+  .steps { counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+  .steps li { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow);
+              padding:17px 18px 17px 62px; position:relative; line-height:1.58; font-size:15px; }
+  .steps li::before { counter-increment:s; content:counter(s); position:absolute; left:15px; top:15px; width:33px; height:33px;
+                      border-radius:11px; background:linear-gradient(140deg,var(--brand),var(--green-d)); color:#fff;
+                      display:grid; place-items:center; font-weight:800; font-size:15px; box-shadow:0 5px 14px rgba(22,163,74,.35); }
+
+  footer { max-width:580px; margin:0 auto; padding:0 16px 120px; color:var(--muted); font-size:13px; line-height:1.7; }
 
   @media (max-width:560px) {
     .hero { min-height:80vh; }
-    .hero-inner { padding:28px 16px 30px; }
     .hero-inner { padding:32px 16px 30px; }
-    h1 { font-size:30px; max-width:none; }
+    h1 { font-size:31px; max-width:none; }
     .hero p { font-size:16px; margin-bottom:16px; }
     .fact { font-size:13px; padding:8px 11px; }
-    main { padding:26px 16px 30px; }
-    section { margin-bottom:30px; }
-    h2 { font-size:21px; }
-    .lede, .card p, .links span { font-size:15px; }
-    .card { padding:16px; }
-    .try { padding:20px 18px; }
-    .say { font-size:15px; }
-    .line { flex-direction:column; gap:2px; padding:9px 0; }
-    .who { flex:none; font-size:11px; }
-    .steps li { padding:12px 14px 12px 50px; }
+    main { padding:30px 16px 30px; }
+    section { margin-bottom:38px; }
+    .lede { font-size:15px; }
+    .card { padding:15px; gap:12px; }
+    .ico { flex-basis:38px; width:38px; height:38px; border-radius:11px; }
+    .ico svg { width:19px; height:19px; }
+    .try { padding:22px 18px; }
+    .say { font-size:14.5px; }
+    .steps li { padding:15px 16px 15px 56px; }
     footer { padding-bottom:130px; }
   }
 
-  /* ---- motion ---- */
+  /* ---------- motion ---------- */
   @keyframes kenburns { from { transform:scale(1.02); } to { transform:scale(1.16); } }
   @keyframes riseIn { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
   @keyframes popIn { from { opacity:0; transform:scale(.82); } to { opacity:1; transform:scale(1); } }
-  @keyframes glow { 0%,100% { box-shadow:0 0 0 0 rgba(22,163,74,.45); } 50% { box-shadow:0 0 0 14px rgba(22,163,74,0); } }
+  @keyframes glow { 0%,100% { box-shadow:0 0 0 0 rgba(255,255,255,.35); } 50% { box-shadow:0 0 0 12px rgba(255,255,255,0); } }
   @keyframes blink { 0%,100% { opacity:.25; } 50% { opacity:1; } }
 
   .hero-inner > * { animation:riseIn .7s cubic-bezier(.2,.7,.3,1) both; }
@@ -113,33 +200,23 @@
 
   .reveal { opacity:0; transform:translateY(30px) scale(.985); transition:opacity .75s ease, transform .75s cubic-bezier(.22,.8,.28,1); }
   .reveal.in { opacity:1; transform:none; }
-  h2.reveal { transform:translateY(24px); }
-  .try.reveal { transform:translateY(34px) scale(.97); }
+  h2.reveal:not(.in), .eyebrow.reveal:not(.in) { transform:translateY(22px); }
+  .try.reveal:not(.in) { transform:translateY(34px) scale(.97); }
   .card.reveal, .links a.reveal, .steps li.reveal { transition-duration:.55s; }
-  .card:hover, .links a:hover { transform:translateY(-3px); box-shadow:0 10px 24px rgba(15,23,42,.07); }
   .card, .links a { transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease, opacity .6s ease; }
+  .card:hover, .links a:hover { transform:translateY(-3px); box-shadow:0 14px 30px rgba(11,18,32,.10); }
+  .stats.in .stat { animation:popIn .5s cubic-bezier(.2,.9,.3,1.3) both; }
+  .stats.in .stat:nth-child(2) { animation-delay:.12s; }
+  .stats.in .stat:nth-child(3) { animation-delay:.24s; }
 
-  .try.in .say { animation:glow 2.6s ease-in-out 1.2s infinite; }
+  .try.in .say { animation:glow 2.8s ease-in-out 1.2s infinite; }
   .chat .line { opacity:0; transform:translateY(10px); }
-  .chat.in .line { animation:riseIn .45s cubic-bezier(.2,.7,.3,1) both; }
-  .typing { display:inline-flex; gap:4px; align-items:center; }
-  .typing i { width:6px; height:6px; border-radius:50%; background:var(--green); display:block; animation:blink 1.1s infinite; }
-  .typing i:nth-child(2) { animation-delay:.18s; }
-  .typing i:nth-child(3) { animation-delay:.36s; }
+  .call.in .line { animation:riseIn .45s cubic-bezier(.2,.7,.3,1) both; }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero::after, .brand, .hero-inner > *, .hero-facts .fact, .chat.in .line { animation:none !important; }
+    .brand, .hero-inner > *, .hero-facts .fact, .call.in .line, .stats.in .stat, .try.in .say, .shot img { animation:none !important; }
     .reveal, .chat .line { opacity:1 !important; transform:none !important; transition:none !important; }
   }
-
-  .phone { background:#0b141a; border-radius:18px; padding:14px; border:1px solid #06202b; }
-  .msg { background:#005c4b; color:#fff; border-radius:12px 12px 12px 4px; padding:12px 14px; display:grid; gap:4px; font-size:15px; line-height:1.45; max-width:92%; }
-  .msg strong { font-size:15px; }
-  .msg-time { font-size:12px; opacity:.75; margin-top:4px; }
-  .faq details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
-  .faq summary { cursor:pointer; font-weight:600; line-height:1.45; }
-  .faq details[open] summary { color:var(--green); }
-  .faq p { margin:10px 0 0; color:var(--muted); line-height:1.6; font-size:15px; }
 </style>
 </head>
 <body>
@@ -158,9 +235,9 @@
     <h1>Your turf's phone, answered every single time</h1>
     <p>Autosham picks up the call, checks your grounds, books the slot and tells you on WhatsApp &mdash; at 7 in the morning, at 1 at night, and while you are on the field.</p>
     <div class="hero-facts">
-      <span class="fact">Answers 24 hours</span>
-      <span class="fact">English &middot; Hindi &middot; Marathi</span>
-      <span class="fact">Cannot double-book</span>
+      <span class="fact"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Answers 24 hours</span>
+      <span class="fact"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg>English &middot; Hindi &middot; Marathi</span>
+      <span class="fact"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4-3 7-7 9c-4-2-7-5-7-9V6z"/><path d="M9 12l2 2l4-4"/></svg>Cannot double-book</span>
     </div>
   </div>
 </section>
@@ -168,110 +245,172 @@
 <main>
 
   <section class="try">
+    <span class="eyebrow">Live demo</span>
     <h2>Try it yourself, right now</h2>
     <p>Tap the green button at the bottom of this page and talk to it exactly as one of your players would. This is a working agent for a sample venue, Greenfield Turf &mdash; two grounds, 6 AM to 2 AM, &#8377;400 an hour on weekdays and &#8377;600 at weekends.</p>
-    <span class="say">Try saying: &ldquo;I want to book cricket tomorrow, 9 PM to 11 PM.&rdquo;</span>
+    <span class="say">
+      <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      Try saying: &ldquo;I want to book cricket tomorrow, 9 PM to 11 PM.&rdquo;
+    </span>
     <p>Book a slot, then call again and ask for the same hour &mdash; it will tell you it is gone and offer you another. Try it in Hindi too. Yours would carry your turf's name, your grounds, your rates and your rules.</p>
   </section>
 
   <section>
+    <span class="eyebrow">The problem</span>
     <h2>The calls you are losing right now</h2>
     <p class="lede">Most turf bookings still come by phone. Every call that rings out while you are refereeing, driving or asleep is a slot someone else fills. And when the bookings live in a notebook and three WhatsApp chats, two teams turn up for the same ground sooner or later.</p>
     <div class="grid">
-      <div class="card">
-        <h3>Missed calls</h3>
-        <p>Evenings and weekends are when players call &mdash; exactly when you are busiest on the ground.</p>
+      <div class="card warn">
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M21 3l-7 7"/><path d="M5 4h3l2 5l-2.5 1.5a12 12 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
+        <div>
+          <h3>Missed calls</h3>
+          <p>Evenings and weekends are when players call &mdash; exactly when you are busiest on the ground.</p>
+        </div>
       </div>
-      <div class="card">
-        <h3>Double bookings</h3>
-        <p>Two people promised the same hour, and you find out when both arrive.</p>
+      <div class="card warn">
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M10.3 4.3L2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+        <div>
+          <h3>Double bookings</h3>
+          <p>Two people promised the same hour, and you find out when both arrive.</p>
+        </div>
       </div>
-      <div class="card">
-        <h3>No record</h3>
-        <p>At month end you cannot say how many hours sold, how much collected, or what is still pending.</p>
+      <div class="card warn">
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M9 17l6-6M9 11l6 6"/></svg></span>
+        <div>
+          <h3>No record</h3>
+          <p>At month end you cannot say how many hours sold, how much collected, or what is still pending.</p>
+        </div>
       </div>
     </div>
   </section>
 
+  <section class="stats">
+    <div class="stat"><b>24 / 7</b><span>Every call answered, including 1 AM</span></div>
+    <div class="stat"><b>4</b><span>Languages on the same number</span></div>
+    <div class="stat"><b>0</b><span>Slots promised twice</span></div>
+  </section>
 
   <section>
+    <span class="eyebrow">On the call</span>
     <h2>What it does on a call</h2>
     <div class="grid">
       <div class="card">
-        <h3>Takes the booking</h3>
-        <p>Name, sport, day and time, then the customer's WhatsApp number &mdash; and it says nothing about the slot until it has checked your diary for real.</p>
+        <span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M9 12l2 2l4-4"/></svg></span>
+        <div>
+          <h3>Takes the booking</h3>
+          <p>Name, sport, day and time, then the customer's WhatsApp number &mdash; and it says nothing about the slot until it has checked your diary for real.</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Never promises a slot it does not have</h3>
-        <p>It checks by writing to your diary. The customer hears a price and a ground only once the slot is actually saved &mdash; never &ldquo;it's free&rdquo; followed by &ldquo;sorry, it's gone&rdquo;.</p>
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4-3 7-7 9c-4-2-7-5-7-9V6z"/><path d="M9 12l2 2l4-4"/></svg></span>
+        <div>
+          <h3>Never promises a slot it does not have</h3>
+          <p>It checks by writing to your diary. The customer hears a price and a ground only once the slot is actually saved &mdash; never &ldquo;it's free&rdquo; followed by &ldquo;sorry, it's gone&rdquo;.</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Knows both your grounds</h3>
-        <p>With two grounds it gives whichever is free &mdash; cricket on one, football on the other in the same hour &mdash; and only says no when both are genuinely taken.</p>
+        <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="16" rx="1.5"/><rect x="13" y="4" width="8" height="16" rx="1.5"/><path d="M7 9v6M17 9v6"/></svg></span>
+        <div>
+          <h3>Knows both your grounds</h3>
+          <p>With two grounds it gives whichever is free &mdash; cricket on one, football on the other in the same hour &mdash; and only says no when both are genuinely taken.</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Quotes your prices</h3>
-        <p>Weekday and weekend rates, hours multiplied correctly, advance and cancellation terms as you set them.</p>
+        <span class="ico">&#8377;</span>
+        <div>
+          <h3>Quotes your prices</h3>
+          <p>Weekday and weekend rates, hours multiplied correctly, advance and cancellation terms as you set them.</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Applies your rules</h3>
-        <p>Opening hours, minimum notice before a slot, whole-hour bookings &mdash; it will refuse politely and offer the earliest time it can actually give.</p>
+        <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <div>
+          <h3>Applies your rules</h3>
+          <p>Opening hours, minimum notice before a slot, whole-hour bookings &mdash; it will refuse politely and offer the earliest time it can actually give.</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Handles cancellations</h3>
-        <p>Finds the booking by phone number, reads it back, and cancels only after the customer clearly says yes. The hour goes back on sale immediately.</p>
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 20v-5h5"/></svg></span>
+        <div>
+          <h3>Handles cancellations</h3>
+          <p>Finds the booking by phone number, reads it back, and cancels only after the customer clearly says yes. The hour goes back on sale immediately.</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Speaks their language</h3>
-        <p>English, Hindi, Hinglish or Marathi &mdash; whichever the caller starts in, for the whole call.</p>
+        <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg></span>
+        <div>
+          <h3>Speaks their language</h3>
+          <p>English, Hindi, Hinglish or Marathi &mdash; whichever the caller starts in, for the whole call.</p>
+        </div>
       </div>
       <div class="card">
-        <h3>Tells you instantly</h3>
-        <p>Every confirmed booking reaches you on WhatsApp or Telegram the moment it is made, with the name, number, slot, ground and amount.</p>
+        <span class="ico"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6z"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg></span>
+        <div>
+          <h3>Tells you instantly</h3>
+          <p>Every confirmed booking reaches you on WhatsApp or Telegram the moment it is made, with the name, number, slot, ground and amount.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <section>
+    <span class="eyebrow">Recorded call</span>
     <h2>A real call, start to finish</h2>
     <p class="lede">This is an actual booking taken by the agent, not a script.</p>
-    <div class="chat">
-      <div class="line bot"><span class="who">Agent</span><span>Hello! Welcome to the turf. May I know your name, please?</span></div>
-      <div class="line"><span class="who">Caller</span><span>Hi, Rizwan here.</span></div>
-      <div class="line bot"><span class="who">Agent</span><span>Hi Rizwan! What would you like to play today, cricket or football?</span></div>
-      <div class="line"><span class="who">Caller</span><span>Cricket.</span></div>
-      <div class="line bot"><span class="who">Agent</span><span>Which date and what time would you like to book?</span></div>
-      <div class="line"><span class="who">Caller</span><span>Tomorrow, 9 PM to 11 PM.</span></div>
-      <div class="line bot"><span class="who">Agent</span><span>May I have your WhatsApp number? Our team will send the booking details and the payment scanner there.</span></div>
-      <div class="line"><span class="who">Caller</span><span>98123 00311</span></div>
-      <div class="line bot"><span class="who">Agent</span><span>That's 98123 00311 &mdash; is that correct?</span></div>
-      <div class="line"><span class="who">Caller</span><span>Yes.</span></div>
-      <div class="line bot"><span class="who">Agent</span><span>One moment, let me check that slot&hellip;</span></div>
-      <div class="line bot"><span class="who">Agent</span><span>Done! Ground 1, eight hundred rupees &mdash; details and payment scanner coming on WhatsApp.</span></div>
+    <div class="call">
+      <div class="call-top">
+        <span class="call-av">a</span>
+        <span><b>Greenfield Turf</b><small>incoming booking call</small></span>
+        <span class="call-live"><i></i>Live</span>
+      </div>
+      <div class="chat">
+        <div class="line bot"><span class="who">Agent</span>Hello! Welcome to the turf. May I know your name, please?</div>
+        <div class="line"><span class="who">Caller</span>Hi, Rizwan here.</div>
+        <div class="line bot"><span class="who">Agent</span>Hi Rizwan! What would you like to play today, cricket or football?</div>
+        <div class="line"><span class="who">Caller</span>Cricket.</div>
+        <div class="line bot"><span class="who">Agent</span>Which date and what time would you like to book?</div>
+        <div class="line"><span class="who">Caller</span>Tomorrow, 9 PM to 11 PM.</div>
+        <div class="line bot"><span class="who">Agent</span>May I have your WhatsApp number? Our team will send the booking details and the payment scanner there.</div>
+        <div class="line"><span class="who">Caller</span>98123 00311</div>
+        <div class="line bot"><span class="who">Agent</span>That's 98123 00311 &mdash; is that correct?</div>
+        <div class="line"><span class="who">Caller</span>Yes.</div>
+        <div class="line bot"><span class="who">Agent</span>One moment, let me check that slot&hellip;</div>
+        <div class="line bot"><span class="who">Agent</span>Done! Ground 1, eight hundred rupees &mdash; details and payment scanner coming on WhatsApp.</div>
+      </div>
     </div>
   </section>
 
   <section>
+    <span class="eyebrow">Afterwards</span>
     <h2>What you see afterwards</h2>
     <p class="lede">Every call becomes a row in your diary: who booked, which ground, how long, how much, and whether they have paid. Today's list, tomorrow's advance bookings, revenue by day and your busiest hours &mdash; all in one page you can open on your phone.</p>
     <div class="links">
       <a href="owner.html">
-        <strong>See the owner dashboard &rarr;</strong>
-        <span>Bookings, revenue, payment tracking and time-of-day split, with sample data.</span>
+        <span class="txt">
+          <strong>See the owner dashboard</strong>
+          <span>Bookings, revenue, payment tracking and time-of-day split, with sample data.</span>
+        </span>
+        <span class="arrow">&rarr;</span>
       </a>
       <a href="index.html">
-        <strong>See a customer page &rarr;</strong>
-        <span>What your players would see, with the booking button on it.</span>
+        <span class="txt">
+          <strong>See a customer page</strong>
+          <span>What your players would see, with the booking button on it.</span>
+        </span>
+        <span class="arrow">&rarr;</span>
       </a>
     </div>
   </section>
 
-
-
   <section class="alert-demo">
+    <span class="eyebrow">Straight to your phone</span>
     <h2>You find out the moment it happens</h2>
     <p class="lede">Every booking reaches your phone straight away, whether you were near it or not.</p>
     <div class="phone">
+      <div class="wa-top">
+        <span class="wa-av">a</span>
+        <span><b>Autosham alerts</b><small>online</small></span>
+      </div>
       <div class="msg">
         <strong>New booking &mdash; Greenfield Turf</strong>
         <span>Rizwan &middot; 93736 58344</span>
@@ -283,6 +422,7 @@
   </section>
 
   <section class="faq">
+    <span class="eyebrow">Questions</span>
     <h2>What turf owners ask</h2>
     <details><summary>What if two people call at the same time?</summary><p>Both get answered. The agent takes as many calls at once as come in, and the diary decides who gets the slot &mdash; the second caller is told honestly and offered another time.</p></details>
     <details><summary>Will it understand Hindi or Marathi?</summary><p>Yes. It replies in whatever the caller starts with &mdash; English, Hindi, Hinglish or Marathi &mdash; for the whole call.</p></details>
@@ -292,6 +432,7 @@
   </section>
 
   <section>
+    <span class="eyebrow">Getting started</span>
     <h2>Getting your turf on it</h2>
     <ol class="steps">
       <li>Tell us your turf name, grounds, opening hours, weekday and weekend rates, notice period and cancellation terms.</li>
@@ -311,7 +452,7 @@
 <script>
   (function () {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var targets = document.querySelectorAll('main h2, .lede, .card, .links a, .steps li, .chat, .try, .phone, .faq details, footer');
+    var targets = document.querySelectorAll('main h2, main .eyebrow, .lede, .card, .links a, .steps li, .call, .try, .stats, .phone, .faq details, footer');
     if (reduce || !('IntersectionObserver' in window)) {
       targets.forEach(function (el) { el.classList.add('in'); });
       document.querySelectorAll('.chat .line').forEach(function (l) { l.style.opacity = 1; l.style.transform = 'none'; });
@@ -330,7 +471,7 @@
           el.style.transitionDelay = Math.min(i * 90, 450) + 'ms';
         }
         // play the transcript out line by line
-        if (el.classList.contains('chat')) {
+        if (el.classList.contains('call')) {
           el.querySelectorAll('.line').forEach(function (line, n) {
             line.style.animationDelay = (n * 300) + 'ms';
           });
@@ -348,15 +489,15 @@
         }
       });
     }, 4000);
-    var bg = document.querySelector('.hero-bg');
-    if (bg) {
+    var media = document.querySelector('.hero-media');
+    if (media) {
       var ticking = false;
       window.addEventListener('scroll', function () {
         if (ticking) return;
         ticking = true;
         requestAnimationFrame(function () {
           var y = Math.min(window.scrollY, 600);
-          bg.style.translate = '0 ' + (y * 0.18) + 'px';
+          media.style.translate = '0 ' + (y * 0.14) + 'px';
           ticking = false;
         });
       }, { passive: true });
