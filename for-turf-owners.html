@@ -122,6 +122,10 @@
              background:linear-gradient(140deg,var(--brand),#0f7a38); }
   .call-top b { font-size:15px; font-weight:700; letter-spacing:-.01em; }
   .call-top small { display:block; font-size:11.5px; opacity:.55; font-weight:500; margin-top:1px; }
+  .call-live { margin-left:auto; display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:800;
+               letter-spacing:.12em; text-transform:uppercase; color:#93edb5; }
+  .call-live i { width:7px; height:7px; border-radius:50%; background:var(--brand); animation:blink 1.4s ease-in-out infinite; }
+  .line.partial { opacity:.62; }
   .call-len { margin-left:auto; font-size:12px; font-weight:700; color:#93edb5; background:rgba(34,197,94,.14);
               border:1px solid rgba(34,197,94,.3); padding:4px 9px; border-radius:999px; font-variant-numeric:tabular-nums; }
   .player { display:flex; align-items:center; gap:12px; padding:13px 4px 0; }
@@ -290,15 +294,16 @@
 
   <section id="yourCall" class="yours" hidden>
     <span class="eyebrow">Your call</span>
-    <h2>Your call, just now</h2>
-    <p class="lede">Recorded here in your browser so you can hear how it handled you. Nothing is uploaded, and it is replaced the moment you call again.</p>
+    <h2 id="yourTitle">Your call, live</h2>
+    <p class="lede" id="yourLede">Every word as it is spoken. Hang up and the recording appears here too.</p>
     <div class="call">
       <div class="call-top">
         <span class="call-av">a</span>
-        <span><b>Greenfield Turf</b><small>your test call</small></span>
-        <span class="call-len" id="yourLen">0:00</span>
+        <span><b>Greenfield Turf</b><small id="yourSub">on the call now</small></span>
+        <span class="call-live" id="yourChip"><i></i>Live</span>
+        <span class="call-len" id="yourLen" hidden>0:00</span>
       </div>
-      <div class="player">
+      <div class="player" id="yourPlayerRow" hidden>
         <button class="play" id="yourPlay" type="button" aria-label="Play your call">
           <svg viewBox="0 0 24 24" id="yourIcon"><path d="M8 5v14l11-7z"/></svg>
         </button>
@@ -306,8 +311,8 @@
         <span class="t" id="yourT">0:00</span>
       </div>
       <audio id="yourAudio"></audio>
-      <div class="chat scroll" id="yourChat" hidden></div>
-      <p class="yours-note" id="yourStatus">Every call also writes a booking into the diary and a full written transcript on the owner's side &mdash; that is what you would see as the turf owner.</p>
+      <div class="chat scroll" id="yourChat"></div>
+      <p class="yours-note" id="yourStatus">Listening&hellip;</p>
     </div>
   </section>
 
@@ -652,10 +657,12 @@
         Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
       document.getElementById('yourT').textContent = '0:00';
       document.getElementById('yourFill').style.width = '0%';
-      var first = section.hasAttribute('hidden');
       section.removeAttribute('hidden');
       section.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
-      if (first) setTimeout(function () { section.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500);
+      document.getElementById('yourPlayerRow').removeAttribute('hidden');
+      var len = document.getElementById('yourLen');
+      len.removeAttribute('hidden');
+      yourPlayer.refreshLines();
     }
 
     window.__autoshamCapture = {
@@ -693,6 +700,7 @@
           if ((micIn && botIn) || ++tries > 150) { clearInterval(poll); poll = null; }
         }, 200);
       },
+      startedAt: function () { return rec ? startedAt : 0; },
       finish: function (quiet) {
         if (poll) { clearInterval(poll); poll = null; }
         micIn = botIn = null;
@@ -704,69 +712,113 @@
     };
   }());
 
-  /* ---- the written transcript of the visitor's own call ----
-     Needs a small endpoint that holds the Autosham API key and returns
-     { lines: [{ role, text, at }] } for a run of the demo workflow. Leave the
-     URL empty and the page simply shows the recording on its own. ---- */
-  var TRANSCRIPT_API = '';
+  /* ---- live transcript ----
+     The widget's own WebSocket already carries the words: rtf-bot-text for the
+     agent, in chunks as it speaks, and rtf-user-transcription for the caller.
+     Tapping that stream gives a transcript with no API key and no server. ---- */
+  var live = window.__autoshamLive = (function () {
+    var chat = document.getElementById('yourChat');
+    var botLine = null, userLine = null;
 
-  function showTranscript(runId) {
-    var box = document.getElementById('yourChat'), status = document.getElementById('yourStatus');
-    if (!box || !status) return;
-    box.setAttribute('hidden', '');
-    box.innerHTML = '';
-    if (!TRANSCRIPT_API || !runId) {
-      status.innerHTML = 'Every call also writes a booking into the diary and a full written transcript on the ' +
-                         'owner\u2019s side \u2014 that is what you would see as the turf owner.';
-      return;
+    function at() {
+      var began = window.__autoshamCapture && window.__autoshamCapture.startedAt();
+      return began ? Math.max(0, (Date.now() - began) / 1000) : 0;
     }
-    status.textContent = 'Writing up the transcript of your call\u2026';
 
-    var tries = 0;
-    (function attempt() {
-      fetch(TRANSCRIPT_API + (TRANSCRIPT_API.indexOf('?') < 0 ? '?' : '&') + 'run=' + runId, { cache: 'no-store' })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (data) {
-          var lines = data && data.lines;
-          if (!lines || !lines.length) throw new Error('not ready');
-          render(lines);
-        })
-        .catch(function () {
-          if (++tries > 20) {
-            status.textContent = 'The written transcript of this call is waiting in the owner\u2019s dashboard.';
-            return;
-          }
-          setTimeout(attempt, 3000);
-        });
-    }());
+    function bubble(role) {
+      var el = document.createElement('div');
+      el.className = 'line' + (role === 'agent' ? ' bot' : '');
+      el.setAttribute('data-t', at().toFixed(1));
+      var who = document.createElement('span');
+      who.className = 'who';
+      who.textContent = role === 'agent' ? 'Agent' : 'You';
+      var body = document.createElement('span');
+      el.appendChild(who);
+      el.appendChild(body);
+      chat.appendChild(el);
+      chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+      return { el: el, body: body };
+    }
 
-    function render(lines) {
-      var first = null;
-      lines.forEach(function (l) {
-        var at = Date.parse(l.at);
-        if (first === null && !isNaN(at)) first = at;
-        var offset = (!isNaN(at) && first !== null) ? Math.max(0, (at - first) / 1000) : 0;
-        var el = document.createElement('div');
-        el.className = 'line' + (l.role === 'assistant' ? ' bot' : '');
-        el.setAttribute('data-t', offset.toFixed(1));
-        var who = document.createElement('span');
-        who.className = 'who';
-        who.textContent = l.role === 'assistant' ? 'Agent' : 'You';
-        el.appendChild(who);
-        el.appendChild(document.createTextNode(l.text));
-        box.appendChild(el);
+    return {
+      reset: function () {
+        chat.innerHTML = '';
+        botLine = userLine = null;
+      },
+      empty: function () { return !chat.children.length; },
+      handle: function (msg) {
+        if (!msg || !msg.type) return;
+        var load = msg.payload || {};
+        if (msg.type === 'rtf-bot-text' && load.text) {
+          userLine = null;
+          if (!botLine) botLine = bubble('agent');
+          botLine.body.textContent += load.text;
+          chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+        } else if (msg.type === 'rtf-bot-stopped-speaking') {
+          botLine = null;
+        } else if (msg.type === 'rtf-user-transcription' && load.text) {
+          botLine = null;
+          if (!userLine) userLine = bubble('you');
+          userLine.body.textContent = load.text;
+          userLine.el.classList.toggle('partial', !load.final);
+          if (load.final) userLine = null;
+        }
+      }
+    };
+  }());
+
+  /* every message the widget receives, without disturbing the widget */
+  (function () {
+    var Native = window.WebSocket;
+    if (!Native) return;
+    function Tapped(url, protocols) {
+      var ws = protocols ? new Native(url, protocols) : new Native(url);
+      ws.addEventListener('message', function (e) {
+        var msg;
+        try { msg = JSON.parse(e.data); } catch (err) { return; }
+        try { live.handle(msg); } catch (err) {}
       });
-      box.removeAttribute('hidden');
-      yourPlayer.refreshLines();
-      status.textContent = 'Word for word, as the agent heard it. Press play and it follows along.';
+      return ws;
     }
-  }
+    Tapped.prototype = Native.prototype;
+    ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'].forEach(function (k) { Tapped[k] = Native[k]; });
+    window.WebSocket = Tapped;
+  }());
 
   /* ---- CTA: start a live call with the demo agent ---- */
   (function () {
     var btn = document.getElementById('talkBtn'), label = document.getElementById('talkLabel');
     if (!btn) return;
     var live = false;
+
+    function openLivePanel() {
+      var sec = document.getElementById('yourCall');
+      window.__autoshamLive.reset();
+      document.getElementById('yourTitle').textContent = 'Your call, live';
+      document.getElementById('yourLede').textContent =
+        'Every word as it is spoken. Hang up and the recording appears here too.';
+      document.getElementById('yourSub').textContent = 'on the call now';
+      document.getElementById('yourChip').removeAttribute('hidden');
+      document.getElementById('yourLen').setAttribute('hidden', '');
+      document.getElementById('yourPlayerRow').setAttribute('hidden', '');
+      document.getElementById('yourStatus').textContent = 'Listening\u2026';
+      var first = sec.hasAttribute('hidden');
+      sec.removeAttribute('hidden');
+      sec.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+      if (first) setTimeout(function () { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
+    }
+
+    function closeLivePanel() {
+      document.getElementById('yourTitle').textContent = 'Your call, just now';
+      document.getElementById('yourLede').textContent =
+        'The call you just had, word for word. Press play and the transcript follows along.';
+      document.getElementById('yourSub').textContent = 'your test call';
+      document.getElementById('yourChip').setAttribute('hidden', '');
+      document.getElementById('yourStatus').textContent = window.__autoshamLive.empty()
+        ? 'Nothing was picked up that time \u2014 check the microphone and try again.'
+        : 'Kept in your browser only, and replaced the next time you call.';
+    }
+
     function set(text, cls) {
       label.textContent = text;
       btn.classList.toggle('live', cls === 'live');
@@ -781,6 +833,7 @@
       try {
         w.start && w.start();
         window.__autoshamCapture && window.__autoshamCapture.begin();
+        openLivePanel();
       } catch (e) { set('Talk to the booking agent', ''); }
     });
     var tries = 0, poll = setInterval(function () {
@@ -790,10 +843,8 @@
       var capture = window.__autoshamCapture;
       function finished() {
         live = false; set('Talk to the booking agent', '');
-        var st = w.getState && w.getState();
-        var runId = st && st.workflowRunId;
         capture && capture.finish();
-        setTimeout(function () { showTranscript(runId); }, 1500);
+        closeLivePanel();
       }
       w.onCallConnected && w.onCallConnected(function () {
         live = true; set('On the call — tap to end', 'live');
