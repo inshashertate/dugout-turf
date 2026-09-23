@@ -384,7 +384,9 @@
       out.textContent = slider.value + (slider.value === '1' ? ' call' : ' calls');
       var perMonth = Math.round(slider.value * 4.3), r = Number(rate.value) || 400;
       var work = document.getElementById('working');
-      if (work) work.textContent = perMonth + ' missed calls a month  x  2 hours  x  ' + String.fromCharCode(8377) + r + ' an hour';
+      var rs = String.fromCharCode(8377);
+      if (work) work.textContent = perMonth + ' missed calls a month  x  ' + rs + (r * 2).toLocaleString('en-IN')
+        + ' a booking  (2 hours at ' + rs + r.toLocaleString('en-IN') + ' an hour)';
       var to = target(), from = shown, t0 = performance.now();
       function step(now) {
         var k = Math.min((now - t0) / 500, 1);
