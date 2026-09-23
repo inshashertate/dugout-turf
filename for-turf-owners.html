@@ -103,7 +103,8 @@
   .cta.live { background:linear-gradient(140deg,#0b2b17,#14532d); animation:glow 2s ease-in-out infinite; }
   .cta.busy { opacity:.8; }
   .cta-note { display:block; margin:11px 2px 0; font-size:12.5px; color:var(--muted); line-height:1.55; text-align:center; }
-  #yourCall { margin-top:20px; }
+  .demo { background:var(--card); border:1px solid var(--line); border-radius:22px; padding:18px; box-shadow:var(--shadow); }
+  #yourCall { margin-top:16px; }
 
   /* ---------- call transcript ---------- */
   .call { border-radius:20px; padding:12px; border:1px solid #16301f; box-shadow:var(--shadow-lg);
@@ -214,6 +215,7 @@
     .play svg { width:16px; height:16px; }
     .player .t { font-size:11.5px; }
     .yours-note { font-size:11.5px; margin-top:11px; }
+    .demo { padding:14px; border-radius:18px; }
     .cta { padding:15px 18px; font-size:15.5px; }
     .cta-note { font-size:12px; }
     footer { padding-bottom:130px; }
@@ -280,9 +282,6 @@
 <main>
 
   <section class="demo">
-    <span class="eyebrow">Live demo</span>
-    <h2>Talk to the AI voice agent</h2>
-    <p class="lede">This is a sample turf &mdash; two grounds, 6 AM to 2 AM, &#8377;400 an hour on weekdays and &#8377;600 at weekends. Speak to it exactly as one of your players would.</p>
     <button class="cta" id="talkBtn" type="button">
       <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
       <span id="talkLabel">Talk to the booking agent</span>
@@ -452,6 +451,7 @@
   <section class="faq">
     <span class="eyebrow">Questions</span>
     <h2>What turf owners ask</h2>
+    <details><summary>Whose turf does the demo book?</summary><p>A made-up venue called Greenfield Turf &mdash; two grounds, 6 AM to 2 AM, &#8377;400 an hour on weekdays and &#8377;600 at weekends. Talk to it exactly as one of your players would; nothing you book there touches a real business.</p></details>
     <details><summary>What if two people call at the same time?</summary><p>Both get answered. The agent takes as many calls at once as come in, and the diary decides who gets the slot &mdash; the second caller is told honestly and offered another time.</p></details>
     <details><summary>Will it understand Hindi or Marathi?</summary><p>Yes. It replies in whatever the caller starts with &mdash; English, Hindi, Hinglish or Marathi &mdash; for the whole call.</p></details>
     <details><summary>Can it give away a slot I have already blocked?</summary><p>No. Nothing is confirmed until it is written into the diary, and the diary refuses a slot that is already taken on both grounds.</p></details>
