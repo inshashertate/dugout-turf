@@ -616,7 +616,7 @@
         Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2);
       document.getElementById('yourT').textContent = '0:00';
       document.getElementById('yourFill').style.width = '0%';
-      if (window.__autoshamShowResult) window.__autoshamShowResult();
+      if (window.__autoshamShowResult) window.__autoshamShowResult(true);
       document.getElementById('yourPlayerRow').removeAttribute('hidden');
       var len = document.getElementById('yourLen');
       len.removeAttribute('hidden');
@@ -758,9 +758,9 @@
       window.__autoshamLive.reset();
     }
 
-    function showResult() {
+    function showResult(force) {
       var sec = document.getElementById('yourCall');
-      if (window.__autoshamLive.empty() || !sec.hasAttribute('hidden')) return;
+      if ((!force && window.__autoshamLive.empty()) || !sec.hasAttribute('hidden')) return;
       sec.removeAttribute('hidden');
       document.getElementById('yourChat').scrollTop = 0;   // read it from the start
       setTimeout(function () { sec.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 250);
