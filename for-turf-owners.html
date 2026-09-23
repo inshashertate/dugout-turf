@@ -103,6 +103,25 @@
   .demo { background:var(--card); border:1px solid rgba(255,255,255,.14); border-radius:20px; padding:16px;
           box-shadow:0 24px 50px rgba(2,14,7,.34); color:var(--ink); }
   #yourCall { margin-top:16px; }
+  .fab { position:fixed; z-index:60; left:14px; bottom:16px; display:inline-flex; align-items:center; gap:9px;
+         padding:13px 18px; border:0; border-radius:999px; cursor:pointer; font:inherit; font-size:15px; font-weight:800;
+         letter-spacing:-.01em; color:#fff; background:linear-gradient(140deg,var(--brand),var(--green-d));
+         box-shadow:0 14px 30px rgba(8,53,28,.38); transition:transform .18s ease, box-shadow .18s ease, background .25s ease; }
+  .fab:hover { transform:translateY(-2px); box-shadow:0 18px 36px rgba(8,53,28,.44); }
+  .fab:active { transform:translateY(0); }
+  .fab svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2.1; stroke-linecap:round; stroke-linejoin:round; }
+  .fab .dot { width:9px; height:9px; border-radius:50%; background:#fff; display:none; animation:blink 1.3s ease-in-out infinite; }
+  .fab.live { background:linear-gradient(140deg,#c2410c,#9a3412); box-shadow:0 14px 30px rgba(154,52,18,.42); }
+  .fab.live svg { display:none; }
+  .fab.live .dot { display:block; }
+  .fab.busy { opacity:.85; }
+  /* the platform's own floating button is replaced by ours; its audio element
+     lives in that container, so the container stays in the page */
+  #autosham-widget-root { opacity:0 !important; pointer-events:none !important;
+                          width:0 !important; height:0 !important; overflow:hidden !important; }
+  @media (max-width:560px) {
+    .fab { left:12px; bottom:12px; padding:12px 16px; font-size:14px; }
+  }
 
   /* ---------- call transcript ---------- */
   .call { border-radius:20px; padding:12px; border:1px solid #16301f; box-shadow:var(--shadow-lg);
@@ -435,7 +454,7 @@
   <section class="faq">
     <span class="eyebrow">Questions</span>
     <h2>What turf owners ask</h2>
-    <details><summary>Whose turf does the demo book?</summary><p>A made-up venue called Greenfield Turf &mdash; two grounds, 6 AM to 2 AM, &#8377;400 an hour on weekdays and &#8377;600 at weekends. Talk to it exactly as one of your players would; nothing you book there touches a real business.</p></details>
+    <details><summary>Whose turf does the demo book?</summary><p>A sample turf we keep for demonstrations, Greenfield Turf &mdash; two grounds, 6 AM to 2 AM, &#8377;400 an hour on weekdays and &#8377;600 at weekends. Talk to it exactly as one of your players would; no real business is affected. Yours would carry your turf's name, your grounds, your hours and your rates.</p></details>
     <details><summary>What if two people call at the same time?</summary><p>Both get answered. The agent takes as many calls at once as come in, and the diary decides who gets the slot &mdash; the second caller is told honestly and offered another time.</p></details>
     <details><summary>Will it understand Hindi or Marathi?</summary><p>Yes. It replies in whatever the caller starts with &mdash; English, Hindi, Hinglish or Marathi &mdash; for the whole call.</p></details>
     <details><summary>Can it give away a slot I have already blocked?</summary><p>No. Nothing is confirmed until it is written into the diary, and the diary refuses a slot that is already taken on both grounds.</p></details>
@@ -459,6 +478,12 @@
   <div class="foot-brand"><img src="img/autosham-mark.png" alt=""><span class="wordmark">autosham<i>.ai</i></span></div>
   Autosham &mdash; voice booking agents for turf businesses. This page is a live demonstration. The call button connects to a sample agent for a made-up venue called Greenfield Turf, so nothing you book here affects a real business. Photographs are of a customer venue.
 </footer>
+
+<button class="fab" id="fabBtn" type="button">
+  <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+  <span class="dot"></span>
+  <span id="fabLabel">Talk to the agent</span>
+</button>
 
 
 <script>
@@ -736,8 +761,13 @@
 
   /* ---- CTA: start a live call with the demo agent ---- */
   (function () {
-    var btn = document.getElementById('talkBtn'), label = document.getElementById('talkLabel');
-    if (!btn) return;
+    var controls = [
+      { btn: document.getElementById('talkBtn'), label: document.getElementById('talkLabel'),
+        text: { idle: 'Talk to the booking agent', busy: 'Connecting…', live: 'On the call — tap to end' } },
+      { btn: document.getElementById('fabBtn'), label: document.getElementById('fabLabel'),
+        text: { idle: 'Talk to the agent', busy: 'Connecting…', live: 'End call' } }
+    ].filter(function (c) { return c.btn && c.label; });
+    if (!controls.length) return;
     var live = false;
 
     // the transcript is collected quietly while the call runs; the panel
@@ -786,40 +816,43 @@
     }
     window.__autoshamShowResult = showResult;
 
-    function set(text, cls) {
-      label.textContent = text;
-      btn.classList.toggle('live', cls === 'live');
-      btn.classList.toggle('busy', cls === 'busy');
+    function set(state) {
+      controls.forEach(function (c) {
+        c.label.textContent = c.text[state];
+        c.btn.classList.toggle('live', state === 'live');
+        c.btn.classList.toggle('busy', state === 'busy');
+      });
     }
-    btn.addEventListener('click', function () {
+    function toggleCall() {
       var w = window.AutoshamWidget;
-      if (!w) { set('Still loading…', 'busy'); return; }
-      if (live) { try { w.stop(); } catch (e) {} return; }
-      set('Connecting…', 'busy');
+      if (!w) { set('busy'); return; }
+      if (live) { try { (w.end || w.stop).call(w); } catch (e) {} return; }
+      set('busy');
       try { w.open && w.open(); } catch (e) {}
       try {
         w.start && w.start();
         window.__autoshamCapture && window.__autoshamCapture.begin();
         armLivePanel();
-      } catch (e) { set('Talk to the booking agent', ''); }
-    });
+      } catch (e) { set('idle'); }
+    }
+    controls.forEach(function (c) { c.btn.addEventListener('click', toggleCall); });
     var tries = 0, poll = setInterval(function () {
       var w = window.AutoshamWidget;
       if (!w) { if (++tries > 40) clearInterval(poll); return; }
       clearInterval(poll);
       var capture = window.__autoshamCapture;
       function finished() {
-        live = false; set('Talk to the booking agent', '');
+        live = false; set('idle');
         capture && capture.finish();
         showResult();
       }
       w.onCallConnected && w.onCallConnected(function () {
-        live = true; set('On the call — tap to end', 'live');
+        live = true; set('live');
         capture && capture.begin();
       });
       w.onCallEnd && w.onCallEnd(finished);
       w.onCallDisconnected && w.onCallDisconnected(finished);
-      w.onError && w.onError(function () { live = false; set('Talk to the booking agent', ''); capture && capture.finish(true); });
+      w.onError && w.onError(function () { live = false; set('idle'); capture && capture.finish(true); });
     }, 300);
   }());
 </script>
