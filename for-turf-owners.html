@@ -655,32 +655,37 @@
 
     window.__autoshamCapture = {
       begin: function () {
-        this.finish(true);
+        if (ctx) return;                       // already capturing this call
         try {
           ctx = new AudioCtx();
           dest = ctx.createMediaStreamDestination();
           chunks = [];
-          var type = pickMime();
-          rec = new MediaRecorder(dest.stream, type ? { mimeType: type } : undefined);
-          rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
-          rec.onstop = publish;
-          startedAt = Date.now();
-          rec.start();
-        } catch (e) { return; }
+        } catch (e) { ctx = null; return; }
 
-        // the widget hands over the microphone and the agent's audio a moment
-        // after the call connects, so attach each one as it appears
+        // the widget hands over the microphone and the agent's audio only once
+        // the call is actually up, so watch for each one and start recording
+        // the moment the first arrives
         var tries = 0;
         poll = setInterval(function () {
           var st = window.AutoshamWidget && window.AutoshamWidget.getState();
-          if (!st || !ctx) return;
+          if (!ctx) { clearInterval(poll); poll = null; return; }
           try {
-            if (!micIn && st.stream) { micIn = ctx.createMediaStreamSource(st.stream); micIn.connect(dest); }
-            if (!botIn && st.audioElement && st.audioElement.srcObject) {
+            if (st && !micIn && st.stream) { micIn = ctx.createMediaStreamSource(st.stream); micIn.connect(dest); }
+            if (st && !botIn && st.audioElement && st.audioElement.srcObject) {
               botIn = ctx.createMediaStreamSource(st.audioElement.srcObject); botIn.connect(dest);
             }
           } catch (e) {}
-          if ((micIn && botIn) || ++tries > 60) { clearInterval(poll); poll = null; }
+          if (!rec && (micIn || botIn)) {
+            try {
+              var type = pickMime();
+              rec = new MediaRecorder(dest.stream, type ? { mimeType: type } : undefined);
+              rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+              rec.onstop = publish;
+              startedAt = Date.now();
+              rec.start();
+            } catch (e) { rec = null; }
+          }
+          if ((micIn && botIn) || ++tries > 150) { clearInterval(poll); poll = null; }
         }, 200);
       },
       finish: function (quiet) {
@@ -710,7 +715,10 @@
       if (live) { try { w.stop(); } catch (e) {} return; }
       set('Connecting…', 'busy');
       try { w.open && w.open(); } catch (e) {}
-      try { w.start && w.start(); } catch (e) { set('Talk to the booking agent', ''); }
+      try {
+        w.start && w.start();
+        window.__autoshamCapture && window.__autoshamCapture.begin();
+      } catch (e) { set('Talk to the booking agent', ''); }
     });
     var tries = 0, poll = setInterval(function () {
       var w = window.AutoshamWidget;
