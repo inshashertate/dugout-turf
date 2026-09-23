@@ -370,6 +370,37 @@
 </script>
 
 <script>
+  (function () {
+    var slider = document.getElementById('missed'),
+        rate   = document.getElementById('rate'),
+        out    = document.getElementById('missedOut'),
+        loss   = document.getElementById('loss');
+    if (!slider || !loss) return;
+    var shown = 0;
+    function target() { return Math.round(slider.value * 4.3) * (Number(rate.value) || 400) * 2; }
+    function paint() {
+      out.textContent = slider.value + (slider.value === '1' ? ' call' : ' calls');
+      var to = target(), from = shown, t0 = performance.now();
+      function step(now) {
+        var k = Math.min((now - t0) / 500, 1);
+        shown = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)));
+        loss.textContent = shown.toLocaleString('en-IN');
+        if (k < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    slider.addEventListener('input', paint);
+    rate.addEventListener('input', paint);
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { paint(); io.disconnect(); } });
+      }, { threshold: 0.35 });
+      io.observe(document.querySelector('.calc-box'));
+    } else { paint(); }
+  }());
+</script>
+
+<script>
   (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
