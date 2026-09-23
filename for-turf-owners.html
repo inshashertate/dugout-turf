@@ -267,6 +267,21 @@
       });
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
     targets.forEach(function (el) { io.observe(el); });
+    // safety net: never leave content hidden if the observer does not fire
+    setTimeout(function () {
+      targets.forEach(function (el) { el.classList.add('in'); });
+      document.querySelectorAll('.chat .line').forEach(function (l) {
+        if (!getComputedStyle(l).animationName || getComputedStyle(l).animationName === 'none') {
+          l.style.opacity = 1; l.style.transform = 'none';
+        }
+      });
+    }, 4000);
+    window.addEventListener('pageshow', function () {
+      targets.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight) el.classList.add('in');
+      });
+    });
   }());
 </script>
 
