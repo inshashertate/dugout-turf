@@ -124,6 +124,7 @@
   #rate { width:72px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; font:inherit; font-size:15px; }
   .calc-figure { display:flex; align-items:baseline; gap:4px; font-weight:800; color:var(--deep); font-size:clamp(38px,11vw,54px); line-height:1; }
   .calc-figure .rupee { font-size:.6em; }
+  .calc-working { margin:0 0 6px; color:var(--muted); font-size:14px; line-height:1.5; }
   .calc-note { margin:8px 0 0; color:var(--muted); font-size:14px; line-height:1.5; }
   .phone { background:#0b141a; border-radius:18px; padding:14px; border:1px solid #06202b; }
   .msg { background:#005c4b; color:#fff; border-radius:12px 12px 12px 4px; padding:12px 14px; display:grid; gap:4px; font-size:15px; line-height:1.45; max-width:92%; }
@@ -257,14 +258,15 @@
 
 
   <section class="calc">
-    <h2>What missed calls cost you</h2>
-    <p class="lede">Move the slider to how many calls you miss in a busy week &mdash; while you are on the ground, driving, or asleep.</p>
+    <h2>How much are missed calls costing you?</h2>
+    <p class="lede">Every call you do not pick up is usually a slot someone else books. Set the slider to how many calls you miss in a normal week, and put in your own rate.</p>
     <div class="calc-box">
       <label for="missed">Calls you miss in a week</label>
       <input id="missed" type="range" min="1" max="25" value="6">
       <div class="calc-row"><span id="missedOut">6 calls</span><span id="rateWrap">at <input id="rate" type="number" min="100" max="3000" step="50" value="400"> &#8377;/hour</span></div>
+      <p class="calc-working" id="working"></p>
       <div class="calc-figure"><span class="rupee">&#8377;</span><span id="loss">0</span></div>
-      <p class="calc-note">slipping away every month &mdash; counting a two-hour slot per call</p>
+      <p class="calc-note">lost every month, if each of those callers books somewhere else</p>
     </div>
   </section>
 
@@ -380,6 +382,9 @@
     function target() { return Math.round(slider.value * 4.3) * (Number(rate.value) || 400) * 2; }
     function paint() {
       out.textContent = slider.value + (slider.value === '1' ? ' call' : ' calls');
+      var perMonth = Math.round(slider.value * 4.3), r = Number(rate.value) || 400;
+      var work = document.getElementById('working');
+      if (work) work.textContent = perMonth + ' missed calls a month  x  2 hours  x  ' + String.fromCharCode(8377) + r + ' an hour';
       var to = target(), from = shown, t0 = performance.now();
       function step(now) {
         var k = Math.min((now - t0) / 500, 1);
