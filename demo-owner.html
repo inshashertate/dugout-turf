@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenfield Turf — Owner Dashboard</title>
+<meta name="description" content="Owner dashboard demo for Greenfield Turf: bookings, revenue and payment tracking from the voice agent.">
+<style>
+  :root {
+    color-scheme: light;
+    --bg:#f4f6f4; --surface:#ffffff; --line:#e3e7e3;
+    --ink:#0f1a13; --ink-2:#4a5850; --ink-3:#77837c;
+    --brand:#16a34a; --brand-deep:#14532d;
+    --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100; --series-5:#4a3aa7;
+    --good:#1baf7a; --warn:#eda100; --bad:#e34948;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg:#0f1210; --surface:#171b18; --line:#272d29;
+      --ink:#ffffff; --ink-2:#c3c9c4; --ink-3:#8b938d;
+      --brand:#22c55e; --brand-deep:#0b3d1f;
+      --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#9085e9;
+      --good:#199e70; --warn:#c98500; --bad:#e66767;
+    }
+  }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  a { color:inherit; }
+
+  /* ---------- login ---------- */
+  .login-wrap { min-height:100vh; display:grid; place-items:center; padding:24px 16px;
+                background:linear-gradient(160deg,var(--brand-deep),#0a0f0c 70%); }
+  .login { width:min(400px,100%); background:var(--surface); border-radius:18px; padding:32px 28px;
+           box-shadow:0 20px 60px rgba(0,0,0,.35); }
+  .login h1 { margin:0 0 4px; font-size:24px; }
+  .login p.sub { margin:0 0 22px; color:var(--ink-2); font-size:14px; }
+  label { display:block; font-size:13px; font-weight:600; margin:14px 0 6px; }
+  input { width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:10px;
+          background:var(--bg); color:var(--ink); font-size:15px; }
+  button.primary { width:100%; margin-top:20px; padding:12px; border:0; border-radius:10px;
+                   background:var(--brand); color:#fff; font-size:16px; font-weight:600; cursor:pointer; }
+  button.primary:hover { filter:brightness(1.07); }
+  .hint { margin-top:16px; font-size:12.5px; color:var(--ink-3); line-height:1.6;
+          background:var(--bg); border:1px dashed var(--line); border-radius:10px; padding:10px 12px; }
+  .err { color:var(--bad); font-size:13px; margin-top:10px; min-height:18px; }
+
+  /* ---------- app ---------- */
+  header { background:var(--surface); border-bottom:1px solid var(--line); }
+  .bar { max-width:1180px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+  .logo { font-weight:800; letter-spacing:-.02em; }
+  .logo span { color:var(--brand); }
+  .demo-chip { font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+               color:var(--brand); background:color-mix(in srgb, var(--brand) 14%, transparent);
+               padding:4px 9px; border-radius:999px; }
+  .bar .right { margin-left:auto; display:flex; gap:8px; align-items:center; }
+  .ghost { background:transparent; border:1px solid var(--line); color:var(--ink-2);
+           padding:8px 12px; border-radius:9px; font-size:13.5px; cursor:pointer; }
+  main { max-width:1180px; margin:0 auto; padding:22px 16px 80px; }
+  .hero { position:relative; border-radius:16px; overflow:hidden; margin-bottom:22px;
+          background:#0b0f0c url("img/dugout-aerial.jpg") center/cover no-repeat; min-height:170px;
+          display:flex; align-items:flex-end; }
+  .hero::after { content:""; position:absolute; inset:0;
+                 background:linear-gradient(90deg,rgba(6,20,11,.92) 0%,rgba(6,20,11,.55) 55%,rgba(6,20,11,.15) 100%); }
+  .hero-txt { position:relative; z-index:1; padding:20px 22px; color:#fff; }
+  .hero-txt h1 { margin:0 0 4px; font-size:22px; letter-spacing:-.01em; }
+  .hero-txt p { margin:0; font-size:13.5px; opacity:.88; }
+  .card-img { width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:12px; }
+  .hero { min-height:210px; }
+  .hero-stats { position:relative; z-index:1; margin-left:auto; padding:20px 22px; display:flex; gap:22px; color:#fff; text-align:right; }
+  .hero-stats div span { display:block; font-size:12px; opacity:.8; }
+  .hero-stats div b { font-size:20px; font-weight:750; }
+  .grounds { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:840px){ .grounds { grid-template-columns:1fr; } }
+  .ground { position:relative; border-radius:14px; overflow:hidden; min-height:190px; display:flex; align-items:flex-end;
+            border:1px solid var(--line); background-size:cover; background-position:center; }
+  .ground::after { content:""; position:absolute; inset:0; background:linear-gradient(0deg,rgba(6,20,11,.92),rgba(6,20,11,.15)); }
+  .ground .g-txt { position:relative; z-index:1; padding:16px 18px; color:#fff; width:100%; }
+  .ground h3 { margin:0 0 6px; font-size:17px; }
+  .ground .g-line { display:flex; justify-content:space-between; font-size:13px; opacity:.92; }
+  .ground .g-bar { height:6px; border-radius:99px; background:rgba(255,255,255,.25); margin-top:10px; overflow:hidden; }
+  .ground .g-bar span { display:block; height:100%; background:var(--brand); border-radius:99px; }
+  h2 { font-size:17px; margin:30px 0 12px; }
+  .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+  .filters button { padding:8px 14px; border-radius:999px; border:1px solid var(--line);
+                    background:var(--surface); color:var(--ink-2); font-size:13.5px; cursor:pointer; }
+  .filters button[aria-pressed="true"] { background:var(--brand); border-color:var(--brand); color:#fff; font-weight:600; }
+
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; }
+  .tile { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 18px; }
+  .tile .label { font-size:12.5px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.05em; }
+  .tile .value { font-size:28px; font-weight:750; margin-top:6px; letter-spacing:-.02em; }
+  .tile .note { font-size:12.5px; color:var(--ink-2); margin-top:4px; }
+
+  .cards { display:grid; grid-template-columns:2fr 1fr; gap:16px; align-items:start; }
+  @media (max-width:840px){ .cards { grid-template-columns:1fr; } }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 18px 18px; }
+  .card h3 { margin:0 0 2px; font-size:15px; }
+  .card .cap { margin:0 0 14px; font-size:12.5px; color:var(--ink-3); }
+
+  /* charts */
+  .bars { display:flex; align-items:flex-end; gap:6px; height:190px; }
+  .bars .col { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; height:100%; }
+  .bars .bar-mark { width:100%; border-radius:4px 4px 0 0; background:var(--series-1); min-height:2px; position:relative; }
+  .bars .bar-mark.alt { background:var(--series-3); }
+  .bars .tick { font-size:11px; color:var(--ink-3); white-space:nowrap; }
+  .bars .val { font-size:11.5px; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-2); margin-top:12px; }
+  .swatch { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:middle; }
+  .split-row { display:flex; align-items:center; gap:10px; margin:10px 0; font-size:13.5px; }
+  .split-row .track { display:block; flex:1; height:10px; border-radius:999px; background:var(--bg); overflow:hidden; }
+  .split-row .fill { display:block; height:100%; border-radius:999px; }
+  .split-row .num { font-variant-numeric:tabular-nums; color:var(--ink-2); min-width:112px; text-align:right; }
+
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th, td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-3); font-weight:600; }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .pill { font-size:12px; font-weight:600; padding:3px 9px; border-radius:999px; border:1px solid transparent; }
+  .pill.paid { color:var(--good); background:color-mix(in srgb, var(--good) 14%, transparent); }
+  .pill.advance { color:var(--warn); background:color-mix(in srgb, var(--warn) 16%, transparent); }
+  .pill.unpaid { color:var(--bad); background:color-mix(in srgb, var(--bad) 14%, transparent); }
+  select { padding:5px 8px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--ink); font-size:12.5px; }
+  .table-wrap { overflow-x:auto; }
+  .daynav { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .daynav button { border:1px solid var(--line); background:var(--surface); color:var(--ink);
+                   width:34px; height:34px; border-radius:9px; font-size:16px; cursor:pointer; }
+  .daynav button:hover { border-color:var(--brand); color:var(--brand); }
+  .daynav .day { font-weight:650; font-size:15px; min-width:210px; }
+  .daynav .day small { display:block; font-weight:400; font-size:12.5px; color:var(--ink-3); }
+  .daynav .today-btn { width:auto; padding:0 12px; font-size:13px; }
+  .up-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+  .up-row:last-child { border-bottom:0; }
+  .up-row .when { min-width:150px; font-weight:600; }
+  .up-row .when small { display:block; font-weight:400; color:var(--ink-3); }
+  .up-row .who { flex:1; color:var(--ink-2); }
+  .up-row .amt { font-variant-numeric:tabular-nums; min-width:80px; text-align:right; }
+  .up-row a.jump { color:var(--brand); font-size:12.5px; cursor:pointer; text-decoration:underline; }
+  footer { text-align:center; color:var(--ink-3); font-size:12px; padding:0 16px 40px; }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section class="login-wrap" id="loginView">
+  <form class="login" id="loginForm" autocomplete="off">
+    <h1>The Greenfield <span style="color:var(--brand)">Turf</span></h1>
+    <p class="sub">Owner dashboard — bookings, revenue and payments taken by your voice agent.</p>
+    <label for="email">Email</label>
+    <input id="email" type="email" value="owner@greenfieldturf.com" required>
+    <label for="pass">Password</label>
+    <input id="pass" type="password" value="demo123" required>
+    <button class="primary" type="submit">Sign in</button>
+    <div class="err" id="loginErr"></div>
+    <div class="hint"><b>Demo login</b> — owner@greenfieldturf.com / demo123<br>
+      Sample data for the demo; no real customer details are shown.</div>
+  </form>
+</section>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="appView" hidden>
+  <header>
+    <div class="bar">
+      <div class="logo">The Greenfield <span>Turf</span></div>
+      <span class="demo-chip">Demo</span>
+      <div class="right">
+        <button class="ghost" id="themeBtn" type="button">Dark mode</button>
+        <button class="ghost" id="logoutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-txt">
+        <h1>Good to see you, Greenfield Turf</h1>
+        <p>Two floodlit grounds · open 6 AM to 2 AM · bookings taken by your voice agent</p>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </section>
+
+    <div class="filters" role="group" aria-label="Time range">
+      <button data-range="today" aria-pressed="false">Today</button>
+      <button data-range="week" aria-pressed="true">This week</button>
+      <button data-range="month" aria-pressed="false">This month</button>
+    </div>
+
+    <div class="tiles" id="tiles"></div>
+
+    <h2>Revenue</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Revenue per day</h3>
+        <p class="cap">Confirmed bookings, last 14 days (₹)</p>
+        <div class="bars" id="revChart"></div>
+        <div class="legend"><span><span class="swatch" style="background:var(--series-1)"></span>Daily revenue</span></div>
+      </div>
+      <div class="card">
+        <img class="card-img" src="img/dugout-entrance.jpg" alt="Greenfield Turf entrance at night" loading="lazy">
+        <h3>Payments</h3>
+        <p class="cap">Of the selected period's revenue</p>
+        <div id="paySplit"></div>
+      </div>
+    </div>
+
+    <h2>Your grounds</h2>
+    <div class="grounds" id="groundCards"></div>
+
+    <h2>Usage</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Busiest hours</h3>
+        <p class="cap">Bookings by start time, selected period</p>
+        <div class="bars" id="hourChart"></div>
+        <div class="legend"><span><span class="swatch" style="background:var(--series-3)"></span>Bookings</span></div>
+      </div>
+      <div class="card">
+        <h3>Time of day</h3>
+        <p class="cap">Bookings and revenue by part of the day</p>
+        <div id="partSplit"></div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <img class="card-img" src="img/dugout-grounds.jpg" alt="Both grounds in play at night" loading="lazy">
+        <h3>Grounds &amp; sports</h3>
+        <p class="cap">Share of booked hours</p>
+        <div id="usageSplit"></div>
+      </div>
+    </div>
+
+    <h2>Upcoming bookings</h2>
+    <div class="card">
+      <p class="cap" id="upcomingCap"></p>
+      <div id="upcoming"></div>
+    </div>
+
+    <h2>Bookings</h2>
+    <div class="card">
+      <div class="daynav">
+        <button id="prevDay" type="button" aria-label="Previous day">‹</button>
+        <div class="day" id="dayLabel"></div>
+        <button id="nextDay" type="button" aria-label="Next day">›</button>
+        <button id="todayBtn" class="today-btn" type="button">Today</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Date</th><th>Time</th><th>Customer</th><th>Phone</th>
+            <th>Sport</th><th>Ground</th><th class="num">Amount</th><th>Payment</th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p class="cap" style="margin-top:12px">Payment status can be changed here; it is saved in this browser.</p>
+    </div>
+  </main>
+  <footer>Demo dashboard · sample data · Greenfield Turf voice agent</footer>
+</div>
+
+<script>
+// ---------- sample data (deterministic so the demo always looks the same) ----------
+const NAMES = ["Rahul Sharma","Insha Malik","Aditya Rao","Sameer Khan","Neha Patil","Karan Mehta",
+  "Faisal Ahmed","Pooja Nair","Rizwan Shaikh","Tanvir Ali","Ibrahim Qureshi","Shyam Verma",
+  "Zaid Ansari","Arjun Desai","Nilesh More","Kabir Joshi"];
+let seed = 20260922;
+const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+const pick = a => a[Math.floor(rnd() * a.length)];
+const emptyNote = t => `<p style="color:var(--ink-3);font-size:13.5px;margin:auto">${t}</p>`;
+const money = n => "₹" + n.toLocaleString("en-IN");
+const DAY = 86400000;
+
+function buildBookings() {
+  const out = [];
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  for (let d = -20; d <= 6; d++) {
+    const date = new Date(today.getTime() + d * DAY);
+    const weekend = date.getDay() === 0 || date.getDay() === 6;
+    const rate = weekend ? 600 : 400;
+    const slots = weekend ? 7 + Math.floor(rnd() * 3) : 4 + Math.floor(rnd() * 3);
+    const used = new Set();
+    for (let i = 0; i < slots; i++) {
+      const start = 15 + Math.floor(rnd() * 9);          // 3 PM – 11 PM starts
+      const hours = rnd() > 0.72 ? 1 : 2;
+      const ground = used.has(start + "-1") ? 2 : (rnd() > 0.5 ? 1 : 2);
+      const key = start + "-" + ground;
+      if (used.has(key)) continue;
+      used.add(key);
+      const past = date.getTime() < today.getTime();
+      const pay = past ? (rnd() > 0.12 ? "paid" : "advance")
+                       : (rnd() > 0.55 ? "advance" : (rnd() > 0.5 ? "paid" : "unpaid"));
+      out.push({
+        id: date.toISOString().slice(0, 10) + "-" + start + "-" + ground,
+        date, start, hours, ground, rate,
+        amount: rate * hours,
+        sport: rnd() > 0.45 ? "Cricket" : "Football",
+        name: pick(NAMES),
+        phone: "9" + String(100000000 + Math.floor(rnd() * 899999999)),
+        pay
+      });
+    }
+  }
+  return out.sort((a, b) => a.date - b.date || a.start - b.start);
+}
+const BOOKINGS = buildBookings();
+
+// payment overrides kept per browser
+const store = {
+  get(id, fallback) { try { return localStorage.getItem("pay:" + id) || fallback; } catch { return fallback; } },
+  set(id, v) { try { localStorage.setItem("pay:" + id, v); } catch {} }
+};
+BOOKINGS.forEach(b => b.pay = store.get(b.id, b.pay));
+
+// ---------- helpers ----------
+const partOfDay = h => h < 12 ? "Morning" : h < 16 ? "Afternoon" : h < 20 ? "Evening" : "Night";
+const PART_COLORS = { Morning:"var(--series-4)", Afternoon:"var(--series-2)", Evening:"var(--series-1)", Night:"var(--series-5)" };
+const hour12 = h => (h % 12 === 0 ? 12 : h % 12) + (h < 12 ? " AM" : " PM");
+const sameDay = (a, b) => a.toDateString() === b.toDateString();
+const fmtDate = d => d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+let range = "week";
+let selectedDate = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+function dayLabel(d) {
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  const diff = Math.round((d - t) / DAY);
+  if (diff === 0) return "today";
+  if (diff === -1) return "yesterday";
+  if (diff === 1) return "tomorrow";
+  return "on " + fmtDate(d);
+}
+
+function inRange(b) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  if (range === "today") return sameDay(b.date, today);
+  if (range === "week") { const s = new Date(today.getTime() - 6 * DAY); return b.date >= s && b.date <= today; }
+  const s = new Date(today.getFullYear(), today.getMonth(), 1);
+  return b.date >= s && b.date <= today;
+}
+
+// ---------- rendering ----------
+function renderTiles(list) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const daysList = BOOKINGS.filter(b => sameDay(b.date, selectedDate));
+  const revenue = list.reduce((s, b) => s + b.amount, 0);
+  const hours = list.reduce((s, b) => s + b.hours, 0);
+  const pending = list.filter(b => b.pay !== "paid")
+                      .reduce((s, b) => s + (b.pay === "advance" ? b.amount * 0.7 : b.amount), 0);
+  const todays = BOOKINGS.filter(b => sameDay(b.date, today));
+  const label = range === "today" ? "today" : range === "week" ? "last 7 days" : "this month";
+  document.getElementById("tiles").innerHTML = `
+    <div class="tile"><div class="label">Revenue (${label})</div><div class="value">${money(revenue)}</div>
+      <div class="note">${list.length} bookings · ${hours} hours</div></div>
+    <div class="tile"><div class="label">Pending payment</div><div class="value">${money(Math.round(pending))}</div>
+      <div class="note">${list.filter(b => b.pay !== "paid").length} bookings not fully paid</div></div>
+    <div class="tile"><div class="label">Bookings ${dayLabel(selectedDate)}</div><div class="value">${daysList.length}</div>
+      <div class="note">${money(daysList.reduce((s, b) => s + b.amount, 0))} · ${daysList.reduce((s, b) => s + b.hours, 0)} hours</div></div>
+    <div class="tile"><div class="label">Average per booking</div><div class="value">${money(list.length ? Math.round(revenue / list.length) : 0)}</div>
+      <div class="note">Weekday ₹400/hr · weekend ₹600/hr</div></div>`;
+}
+
+function renderRevChart() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const days = [...Array(14)].map((_, i) => new Date(today.getTime() - (13 - i) * DAY));
+  const vals = days.map(d => BOOKINGS.filter(b => sameDay(b.date, d)).reduce((s, b) => s + b.amount, 0));
+  const max = Math.max(...vals, 1);
+  if (!BOOKINGS.length) { document.getElementById("revChart").innerHTML = emptyNote("No revenue yet"); } else
+  document.getElementById("revChart").innerHTML = days.map((d, i) => `
+    <div class="col" title="${fmtDate(d)} — ${money(vals[i])}">
+      <div class="val">${vals[i] ? (vals[i] / 1000).toFixed(1) + "k" : ""}</div>
+      <div class="bar-mark" style="height:${Math.round((vals[i] / max) * 100)}%"></div>
+      <div class="tick">${d.getDate()}</div>
+    </div>`).join("");
+}
+
+function renderHourChart(list) {
+  const slots = [15, 16, 17, 18, 19, 20, 21, 22, 23];
+  const counts = slots.map(h => list.filter(b => b.start === h).length);
+  const max = Math.max(...counts, 1);
+  if (!list.length) { document.getElementById("hourChart").innerHTML = emptyNote("No bookings yet"); return; }
+  document.getElementById("hourChart").innerHTML = slots.map((h, i) => `
+    <div class="col" title="${hour12(h)} — ${counts[i]} bookings">
+      <div class="val">${counts[i] || ""}</div>
+      <div class="bar-mark alt" style="height:${Math.round((counts[i] / max) * 100)}%"></div>
+      <div class="tick">${h % 12 === 0 ? 12 : h % 12}${h < 12 ? "a" : "p"}</div>
+    </div>`).join("");
+}
+
+function splitRow(label, value, total, color) {
+  const pct = total ? Math.round((value / total) * 100) : 0;
+  return `<div class="split-row"><span style="min-width:104px">${label}</span>
+    <span class="track"><span class="fill" style="width:${pct}%;background:${color}"></span></span>
+    <span class="num">${pct}%</span></div>`;
+}
+
+function renderSplits(list) {
+  const total = list.reduce((s, b) => s + b.amount, 0);
+  const by = k => list.filter(b => b.pay === k).reduce((s, b) => s + b.amount, 0);
+  document.getElementById("paySplit").innerHTML =
+    splitRow("Paid " + money(by("paid")), by("paid"), total, "var(--good)") +
+    splitRow("Advance " + money(by("advance")), by("advance"), total, "var(--warn)") +
+    splitRow("Unpaid " + money(by("unpaid")), by("unpaid"), total, "var(--bad)") +
+    `<p class="cap" style="margin-top:14px">Advance is 30% by UPI; the rest is collected at the turf.</p>`;
+  const hrs = f => list.filter(f).reduce((s, b) => s + b.hours, 0);
+  const th = hrs(() => true);
+  document.getElementById("usageSplit").innerHTML =
+    splitRow("Field 1", hrs(b => b.ground === 1), th, "var(--series-1)") +
+    splitRow("Field 2", hrs(b => b.ground === 2), th, "var(--series-2)") +
+    `<div style="height:10px"></div>` +
+    splitRow("Cricket", hrs(b => b.sport === "Cricket"), th, "var(--series-3)") +
+    splitRow("Football", hrs(b => b.sport === "Football"), th, "var(--series-1)") +
+    `<p class="cap" style="margin-top:14px">${th} booked hours in this period.</p>`;
+}
+
+function renderHero() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const t = BOOKINGS.filter(b => sameDay(b.date, today));
+  const month = BOOKINGS.filter(b => b.date >= new Date(today.getFullYear(), today.getMonth(), 1) && b.date <= today);
+  document.getElementById("heroStats").innerHTML = `
+    <div><span>Today</span><b>${t.length} bookings</b></div>
+    <div><span>Today's revenue</span><b>${money(t.reduce((s, b) => s + b.amount, 0))}</b></div>
+    <div><span>This month</span><b>${money(month.reduce((s, b) => s + b.amount, 0))}</b></div>`;
+}
+
+function renderGrounds() {
+  const open = 20; // 6 AM to 2 AM
+  const day = BOOKINGS.filter(b => sameDay(b.date, selectedDate));
+  const imgs = { 1: "img/dugout-grounds.jpg", 2: "img/dugout-entrance.jpg" };
+  document.getElementById("groundCards").innerHTML = [1, 2].map(g => {
+    const list = day.filter(b => b.ground === g);
+    const hrs = list.reduce((s, b) => s + b.hours, 0);
+    const next = list.sort((a, b) => a.start - b.start).find(b => true);
+    return `<section class="ground" style="background-image:url('${imgs[g]}')">
+      <div class="g-txt">
+        <h3>Ground ${g}</h3>
+        <div class="g-line"><span>${list.length} booking${list.length === 1 ? "" : "s"} ${dayLabel(selectedDate)}</span>
+          <span>${money(list.reduce((s, b) => s + b.amount, 0))}</span></div>
+        <div class="g-bar"><span style="width:${Math.min(100, Math.round(hrs / open * 100))}%"></span></div>
+        <div class="g-line" style="margin-top:8px">
+          <span>${hrs} of ${open} hours booked</span>
+          <span>${next ? "first slot " + hour12(next.start) : "free all day"}</span></div>
+      </div></section>`;
+  }).join("");
+}
+
+function renderUpcoming() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const future = BOOKINGS.filter(b => b.date > today).sort((a, b) => a.date - b.date || a.start - b.start);
+  const byDay = {};
+  future.forEach(b => { const k = b.date.toDateString(); (byDay[k] = byDay[k] || []).push(b); });
+  const total = future.reduce((s, b) => s + b.amount, 0);
+  document.getElementById("upcomingCap").textContent =
+    future.length ? `${future.length} bookings already taken for future dates · ${money(total)} expected`
+                  : "No advance bookings yet.";
+  document.getElementById("upcoming").innerHTML = Object.entries(byDay).map(([k, list]) => {
+    const d = list[0].date;
+    const days = Math.round((d - today) / DAY);
+    const names = list.slice(0, 3).map(b => `${b.name.split(" ")[0]} (${hour12(b.start)})`).join(", ");
+    return `<div class="up-row">
+      <span class="when">${d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short" })}
+        <small>${days === 1 ? "tomorrow" : "in " + days + " days"} · ${list.length} booking${list.length === 1 ? "" : "s"}</small></span>
+      <span class="who">${names}${list.length > 3 ? " +" + (list.length - 3) + " more" : ""}</span>
+      <span class="amt">${money(list.reduce((s, b) => s + b.amount, 0))}</span>
+      <a class="jump" data-day="${d.toISOString()}">View</a></div>`;
+  }).join("");
+  document.querySelectorAll("#upcoming .jump").forEach(a => a.onclick = () => {
+    selectedDate = new Date(a.dataset.day); selectedDate.setHours(0, 0, 0, 0); draw();
+    document.getElementById("dayLabel").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+}
+
+function renderParts(list) {
+  const parts = ["Morning", "Afternoon", "Evening", "Night"];
+  const hours = { Morning:"6 AM – 12 PM", Afternoon:"12 – 4 PM", Evening:"4 – 8 PM", Night:"8 PM – 2 AM" };
+  const total = list.length || 1;
+  document.getElementById("partSplit").innerHTML = parts.map(p => {
+    const rows = list.filter(b => partOfDay(b.start) === p);
+    const pct = Math.round((rows.length / total) * 100);
+    return `<div class="split-row">
+      <span style="min-width:104px">${p}<br><small style="color:var(--ink-3)">${hours[p]}</small></span>
+      <span class="track"><span class="fill" style="width:${pct}%;background:${PART_COLORS[p]}"></span></span>
+      <span class="num">${rows.length} · ${money(rows.reduce((s, b) => s + b.amount, 0))}</span></div>`;
+  }).join("") + `<p class="cap" style="margin-top:12px">${list.length} bookings in the selected period.</p>`;
+}
+
+function renderRows() {
+  const day = BOOKINGS.filter(b => sameDay(b.date, selectedDate));
+  const rows = [...day].sort((a, b) => a.start - b.start);
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  const diff = Math.round((selectedDate - t) / DAY);
+  const pretty = selectedDate.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
+  const rel = diff === 0 ? "Today" : diff === -1 ? "Yesterday" : diff === 1 ? "Tomorrow" : pretty.split(",")[0];
+  document.getElementById("dayLabel").innerHTML =
+    `${rel} <small>${pretty} · ${day.length} booking${day.length === 1 ? "" : "s"} · ${money(day.reduce((s, b) => s + b.amount, 0))}</small>`;
+  document.getElementById("rows").innerHTML = rows.map(b => `
+    <tr>
+      <td>${fmtDate(b.date)}</td>
+      <td>${hour12(b.start)} – ${hour12(b.start + b.hours)}<br><small style="color:var(--ink-3)">${partOfDay(b.start)}</small></td>
+      <td>${b.name}</td><td>${b.phone}</td><td>${b.sport}</td><td>Ground ${b.ground}</td>
+      <td class="num">${money(b.amount)}</td>
+      <td><span class="pill ${b.pay}">${b.pay === "paid" ? "Paid" : b.pay === "advance" ? "Advance" : "Unpaid"}</span>
+        <select data-id="${b.id}" aria-label="Change payment status">
+          <option value="paid" ${b.pay === "paid" ? "selected" : ""}>Paid</option>
+          <option value="advance" ${b.pay === "advance" ? "selected" : ""}>Advance</option>
+          <option value="unpaid" ${b.pay === "unpaid" ? "selected" : ""}>Unpaid</option>
+        </select></td>
+    </tr>`).join("") || `<tr><td colspan="8" style="color:var(--ink-3)">No bookings on this day.</td></tr>`;
+  document.querySelectorAll("#rows select").forEach(sel => sel.onchange = e => {
+    const b = BOOKINGS.find(x => x.id === e.target.dataset.id);
+    b.pay = e.target.value; store.set(b.id, b.pay); draw();
+  });
+}
+
+function draw() {
+  const list = BOOKINGS.filter(inRange);
+  renderTiles(list); renderRevChart(); renderHourChart(list); renderSplits(list); renderParts(list); renderUpcoming(); renderHero(); renderGrounds(); renderRows();
+}
+
+// ---------- wiring ----------
+document.querySelectorAll(".filters button").forEach(btn => btn.onclick = () => {
+  range = btn.dataset.range;
+  document.querySelectorAll(".filters button").forEach(b => b.setAttribute("aria-pressed", b === btn));
+  draw();
+});
+function shiftDay(days) {
+  selectedDate = new Date(selectedDate.getTime() + days * DAY);
+  selectedDate.setHours(0, 0, 0, 0); draw();
+}
+document.getElementById("prevDay").onclick = () => shiftDay(-1);
+document.getElementById("nextDay").onclick = () => shiftDay(1);
+document.getElementById("todayBtn").onclick = () => { selectedDate = new Date(); selectedDate.setHours(0, 0, 0, 0); draw(); };
+document.getElementById("themeBtn").onclick = () => {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+  document.getElementById("themeBtn").textContent = dark ? "Dark mode" : "Light mode";
+};
+document.getElementById("loginForm").onsubmit = e => {
+  e.preventDefault();
+  const ok = email.value.trim().toLowerCase() === "owner@greenfieldturf.com" && pass.value === "demo123";
+  if (!ok) { document.getElementById("loginErr").textContent = "Use the demo login shown below."; return; }
+  try { sessionStorage.setItem("dot-demo", "1"); } catch {}
+  showApp();
+};
+document.getElementById("logoutBtn").onclick = () => {
+  try { sessionStorage.removeItem("dot-demo"); } catch {}
+  location.reload();
+};
+function showApp() {
+  document.getElementById("loginView").hidden = true;
+  document.getElementById("appView").hidden = false;
+  draw();
+}
+try { if (sessionStorage.getItem("dot-demo")) showApp(); } catch {}
+</script>
+</body>
+</html>

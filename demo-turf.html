@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Book football or cricket at Greenfield Turf by talking to our voice assistant.">
+<title>Greenfield Turf — Football &amp; Cricket</title>
+<style>
+  :root { --green:#16A34A; --deep:#0b3d1f; --ink:#0f172a; --muted:#475569; --bg:#f6f8f5; --card:#ffffff; --line:#e2e8f0; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); }
+  .hero { position:relative; min-height:78vh; display:flex; align-items:flex-end; color:#fff;
+          background:url("img/dugout-aerial.jpg") center/cover no-repeat; }
+  .hero::before { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.35) 45%,rgba(4,30,14,.9) 100%); }
+  .hero-inner { position:relative; max-width:1000px; margin:0 auto; width:100%; padding:48px 16px 56px; }
+  .tag { display:inline-block; background:rgba(22,163,74,.9); padding:6px 12px; border-radius:999px; font-size:14px; font-weight:600; letter-spacing:.3px; }
+  h1 { margin:14px 0 10px; font-size:clamp(40px,8vw,72px); line-height:1; }
+  .hero p { margin:0 0 24px; font-size:clamp(17px,2.4vw,20px); max-width:560px; opacity:.95; line-height:1.5; }
+  .hero-facts { display:flex; flex-wrap:wrap; gap:10px; }
+  .fact { background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); backdrop-filter:blur(4px); padding:10px 14px; border-radius:10px; font-size:15px; }
+  main { max-width:1000px; margin:0 auto; padding:40px 16px 120px; }
+  h2 { font-size:26px; margin:0 0 16px; }
+  .sports { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; margin-bottom:40px; }
+  .sport { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+  .sport img { width:100%; height:260px; object-fit:cover; display:block; }
+  .sport-body { padding:18px 20px 22px; }
+  .sport h3 { margin:0 0 6px; font-size:21px; }
+  .sport p { margin:0; color:var(--muted); line-height:1.6; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:40px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .card .big { font-size:30px; font-weight:700; color:var(--deep); }
+  .card .small { color:var(--muted); margin-top:4px; }
+  .steps { counter-reset:s; list-style:none; padding:0; margin:0 0 40px; display:grid; gap:12px; }
+  .steps li { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px 14px 56px; position:relative; line-height:1.5; }
+  .steps li::before { counter-increment:s; content:counter(s); position:absolute; left:16px; top:12px; width:28px; height:28px; border-radius:50%; background:var(--green); color:#fff; display:grid; place-items:center; font-weight:700; }
+  .cta { background:linear-gradient(135deg,#14532d,#16A34A); color:#fff; border-radius:16px; padding:24px; }
+  .cta strong { font-size:19px; }
+  .cta p { margin:8px 0 0; opacity:.95; line-height:1.6; }
+  footer { max-width:1000px; margin:0 auto; padding:0 16px 110px; color:var(--muted); font-size:12px; line-height:1.6; }
+  footer a { color:var(--muted); }
+</style>
+</head>
+<body>
+<section class="hero">
+  <div class="hero-inner">
+    <span class="tag">Football &middot; Cricket</span>
+    <h1>Greenfield Turf</h1>
+    <p>Floodlit turf for football and cricket, open late every night. Book your slot in seconds by talking to our voice assistant.</p>
+    <div class="hero-facts">
+      <span class="fact">Open 6 AM &ndash; 2 AM</span>
+      <span class="fact">Mon&ndash;Fri &#8377;400/hr</span>
+      <span class="fact">Sat &amp; Sun &#8377;600/hr</span>
+    </div>
+  </div>
+</section>
+<main>
+  <h2>Play your game</h2>
+  <div class="sports">
+    <div class="sport">
+      <img src="img/dugout-football.jpg" alt="Football on the floodlit turf at night" loading="lazy">
+      <div class="sport-body"><h3>Football</h3><p>Fast games on floodlit turf, day or night. Bring your team, however many players you like.</p></div>
+    </div>
+    <div class="sport">
+      <img src="img/dugout-cricket.jpg" alt="Cricket under the floodlights" loading="lazy">
+      <div class="sport-body"><h3>Cricket</h3><p>Netted cricket turf under the lights. Bat and ball kits available on request.</p></div>
+    </div>
+  </div>
+  <h2>Prices &amp; timings</h2>
+  <div class="grid">
+    <div class="card"><div class="big">&#8377;400<span style="font-size:16px">/hr</span></div><div class="small">Monday to Friday</div></div>
+    <div class="card"><div class="big">&#8377;600<span style="font-size:16px">/hr</span></div><div class="small">Saturday &amp; Sunday</div></div>
+    <div class="card"><div class="big">6 AM&ndash;2 AM</div><div class="small">Open every day</div></div>
+  </div>
+  <h2>How to book</h2>
+  <ol class="steps">
+    <li>Tap the green <strong>&ldquo;Book Greenfield Turf by Voice&rdquo;</strong> button at the bottom-left and allow the microphone.</li>
+    <li>Tell us your name, then whether you want to play <strong>cricket or football</strong>.</li>
+    <li>Say the day, time and how many hours. Speak in English, Hindi, Hinglish or Marathi.</li>
+    <li>Confirm the summary. Your payment link and confirmation come on WhatsApp.</li>
+  </ol>
+  <div class="cta">
+    <strong>Ready to play?</strong>
+    <p>Tap the voice button and book your slot now. Works best in Chrome.</p>
+  </div>
+  <p style="margin-top:28px;font-size:14px;color:var(--muted)">Turf owner? <a href="owner.html" style="color:var(--green);font-weight:600">Open the owner dashboard</a> to see bookings, revenue and payments.</p>
+</main>
+<footer>Greenfield Turf · book by voice, any time from 6 AM to 2 AM</footer>
+<!-- Autosham Widget -->
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://autosham-ui-production.up.railway.app/embed/autosham-widget.js?token=emb_3XqyIn2gHbYNG5ZhmSAoAw1uyBdKE3QmL9qWqRq54ps&environment=production&apiEndpoint=https://autosham-voice-ai-agent-production.up.railway.app';
+    // Details about this visitor, available in your prompts as
+    // {{initial_context.page_url}}. Edit these or add your own.
+    js.setAttribute('data-autosham-context', JSON.stringify({
+      page_url: window.location.href,
+      today: new Date().toISOString().slice(0, 10)
+    }));
+    js.async = true;
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'autosham-widget'));
+</script>
+
+</body>
+</html>
