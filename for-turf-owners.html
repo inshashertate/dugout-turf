@@ -106,9 +106,9 @@
   #yourCall { margin-top:20px; }
 
   /* ---------- call transcript ---------- */
-  .call { border-radius:22px; padding:14px; border:1px solid #16301f; box-shadow:var(--shadow-lg);
+  .call { border-radius:20px; padding:12px; border:1px solid #16301f; box-shadow:var(--shadow-lg);
           background:linear-gradient(180deg,#0e1f16 0%,#0a1410 100%); }
-  .call-top { display:flex; align-items:center; gap:11px; padding:4px 6px 13px; border-bottom:1px solid rgba(255,255,255,.09); color:#fff; }
+  .call-top { display:flex; align-items:center; gap:10px; padding:3px 5px 11px; border-bottom:1px solid rgba(255,255,255,.09); color:#fff; }
   .call-av { width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:15px; color:#06200f;
              background:linear-gradient(140deg,var(--brand),#0f7a38); }
   .call-top b { font-size:15px; font-weight:700; letter-spacing:-.01em; }
@@ -119,16 +119,16 @@
   .line.partial { opacity:.62; }
   .call-len { margin-left:auto; font-size:12px; font-weight:700; color:#93edb5; background:rgba(34,197,94,.14);
               border:1px solid rgba(34,197,94,.3); padding:4px 9px; border-radius:999px; font-variant-numeric:tabular-nums; }
-  .player { display:flex; align-items:center; gap:12px; padding:13px 4px 0; }
+  .player { display:flex; align-items:center; gap:11px; padding:11px 4px 0; }
   .play { flex:0 0 44px; width:44px; height:44px; border-radius:50%; border:0; cursor:pointer; display:grid; place-items:center;
           background:linear-gradient(140deg,var(--brand),var(--green-d)); color:#04140a; box-shadow:0 6px 16px rgba(34,197,94,.30); }
   .play svg { width:18px; height:18px; fill:currentColor; stroke:none; }
   .bar { flex:1; height:6px; border-radius:99px; background:rgba(255,255,255,.14); overflow:hidden; cursor:pointer; }
   .bar span { display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,var(--brand),#7ee2a4); }
   .player .t { font-size:12.5px; font-weight:700; color:#9fb3a6; font-variant-numeric:tabular-nums; }
-  .chat { display:grid; gap:8px; padding:14px 2px 2px; max-height:none; }
+  .chat { display:grid; gap:7px; padding:12px 2px 2px; max-height:none; }
   .chat:empty { display:none; }
-  .chat.scroll { max-height:370px; overflow-y:auto; scrollbar-width:thin; padding-right:6px;
+  .chat.scroll { max-height:300px; overflow-y:auto; scrollbar-width:thin; padding-right:6px;
                  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 90%,transparent 100%);
                  mask-image:linear-gradient(180deg,#000 0,#000 90%,transparent 100%); }
   .chat.scroll::-webkit-scrollbar { width:4px; }
@@ -138,7 +138,7 @@
   .line.now { outline:2px solid rgba(34,197,94,.65); outline-offset:1px; }
   .yours-note { margin:13px 4px 2px; font-size:12.5px; line-height:1.55; color:#8aa394; }
   .note { justify-self:center; max-width:100%; background:none; color:#7f9788; font-size:12.5px; font-style:italic; padding:4px 0; }
-  .line { max-width:87%; padding:10px 13px; border-radius:15px; font-size:14.8px; line-height:1.5;
+  .line { max-width:88%; padding:9px 12px; border-radius:14px; font-size:14.2px; line-height:1.48;
           background:#1c2733; color:#e7edf5; justify-self:end; border-bottom-right-radius:5px; }
   .line.bot { background:#14381f; color:#e9fbf0; justify-self:start; border-bottom-right-radius:15px; border-bottom-left-radius:5px; }
   .who { display:block; font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; opacity:.5; margin-bottom:3px; }
@@ -200,6 +200,22 @@
     .ico { flex-basis:38px; width:38px; height:38px; border-radius:11px; }
     .ico svg { width:19px; height:19px; }
     .steps li { padding:15px 16px 15px 56px; }
+    .call { padding:10px; border-radius:18px; }
+    .call-av { width:32px; height:32px; font-size:14px; }
+    .call-top b { font-size:14px; }
+    .call-top small { font-size:11px; }
+    .call-len { font-size:11px; padding:3px 8px; }
+    .chat { gap:6px; padding:10px 2px 2px; }
+    .chat.scroll { max-height:250px; }
+    .line { max-width:91%; padding:8px 11px; border-radius:13px; font-size:13.6px; line-height:1.45; }
+    .who { font-size:9.5px; margin-bottom:2px; }
+    .player { gap:10px; padding:9px 2px 0; }
+    .play { flex-basis:38px; width:38px; height:38px; }
+    .play svg { width:16px; height:16px; }
+    .player .t { font-size:11.5px; }
+    .yours-note { font-size:11.5px; margin-top:11px; }
+    .cta { padding:15px 18px; font-size:15.5px; }
+    .cta-note { font-size:12px; }
     footer { padding-bottom:130px; }
   }
 
@@ -746,6 +762,7 @@
       var sec = document.getElementById('yourCall');
       if (window.__autoshamLive.empty() || !sec.hasAttribute('hidden')) return;
       sec.removeAttribute('hidden');
+      document.getElementById('yourChat').scrollTop = 0;   // read it from the start
       setTimeout(function () { sec.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 250);
     }
     window.__autoshamShowResult = showResult;
