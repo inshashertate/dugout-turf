@@ -80,7 +80,7 @@
   .card.warn .ico { color:#d2541f; background:linear-gradient(140deg,rgba(234,118,42,.20),rgba(239,68,68,.07)); }
 
   /* ---------- stats band ---------- */
-  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; border-radius:20px; padding:22px 12px; color:#fff;
+  .stats-unused { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; border-radius:20px; padding:22px 12px; color:#fff;
            background:linear-gradient(135deg,#072a19 0%,#0e4a2a 55%,#13703f 100%); box-shadow:var(--shadow-lg); position:relative; overflow:hidden; }
   .stats::after { content:""; position:absolute; width:280px; height:280px; right:-110px; top:-140px; border-radius:50%;
                   background:radial-gradient(circle,rgba(34,197,94,.30),transparent 65%); }
@@ -103,6 +103,9 @@
   .demo { background:var(--card); border:1px solid rgba(255,255,255,.14); border-radius:20px; padding:16px;
           box-shadow:0 24px 50px rgba(2,14,7,.34); color:var(--ink); }
   #yourCall { margin-top:16px; }
+  .proof figure { margin:0; }
+  .proof img { width:100%; height:230px; object-fit:cover; border-radius:18px; display:block; box-shadow:var(--shadow); }
+  .proof figcaption { margin:11px 2px 0; font-size:14px; line-height:1.6; color:var(--muted); }
   .fab { position:fixed; z-index:60; left:14px; bottom:16px; display:inline-flex; align-items:center; gap:9px;
          padding:13px 18px; border:0; border-radius:999px; cursor:pointer; font:inherit; font-size:15px; font-weight:800;
          letter-spacing:-.01em; color:#fff; background:linear-gradient(140deg,var(--brand),var(--green-d));
@@ -292,13 +295,13 @@
   <div class="hero-inner">
     <span class="tag">Voice agent for turf grounds</span>
     <h1>Your turf's phone, answered every single time</h1>
-    <p>Press the button and book a slot with your voice, the way one of your players would. It answers at 7 in the morning and at 1 at night, checks your grounds and writes the booking down.</p>
+    <p>Press the button and book a slot the way one of your players would. It picks up at 7 in the morning and at 1 at night, checks both your grounds, and writes the booking down.</p>
       <div class="demo">
       <button class="cta" id="talkBtn" type="button">
         <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
         <span id="talkLabel">Talk to the booking agent</span>
       </button>
-      <span class="cta-note">Book a slot with it. The moment the booking is done, your booking, the recording and the transcript appear here — in this browser only, and gone when you leave the page.</span>
+      <span class="cta-note">Book a slot with it, in English or in Hindi: &ldquo;Kal raat 9 baje se 11 baje tak cricket book karna hai.&rdquo; When the booking is done, it appears below with the recording and the transcript, in this browser only.</span>
 
       <div id="yourCall" hidden>
         <div class="call">
@@ -363,70 +366,43 @@
     </div>
   </section>
 
-  <section class="stats">
-    <div class="stat"><b>24 / 7</b><span>Every call answered, including 1 AM</span></div>
-    <div class="stat"><b>4</b><span>Languages on the same number</span></div>
-    <div class="stat"><b>0</b><span>Slots promised twice</span></div>
-  </section>
-
   <section>
     <span class="eyebrow">On the call</span>
-    <h2>What it does on a call</h2>
+    <h2>What it does when the phone rings</h2>
     <div class="grid">
-      <div class="card">
-        <span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M9 12l2 2l4-4"/></svg></span>
-        <div>
-          <h3>Takes the booking</h3>
-          <p>Name, sport, day and time, then the customer's WhatsApp number &mdash; and it says nothing about the slot until it has checked your diary for real.</p>
-        </div>
-      </div>
       <div class="card">
         <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4-3 7-7 9c-4-2-7-5-7-9V6z"/><path d="M9 12l2 2l4-4"/></svg></span>
         <div>
-          <h3>Never promises a slot it does not have</h3>
-          <p>It checks by writing to your diary. The customer hears a price and a ground only once the slot is actually saved &mdash; never &ldquo;it's free&rdquo; followed by &ldquo;sorry, it's gone&rdquo;.</p>
+          <h3>It cannot promise a slot you do not have</h3>
+          <p>The only way it finds out is by writing the booking into your diary. The caller hears a price and a ground once the slot is actually his, so nobody is told &ldquo;it&rsquo;s free&rdquo; and then &ldquo;sorry, it&rsquo;s gone&rdquo;.</p>
         </div>
       </div>
       <div class="card">
         <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="16" rx="1.5"/><rect x="13" y="4" width="8" height="16" rx="1.5"/><path d="M7 9v6M17 9v6"/></svg></span>
         <div>
-          <h3>Knows both your grounds</h3>
-          <p>With two grounds it gives whichever is free &mdash; cricket on one, football on the other in the same hour &mdash; and only says no when both are genuinely taken.</p>
+          <h3>It works both grounds</h3>
+          <p>Whichever is free, it gives. Cricket on one and football on the other in the same hour is fine. It only says no when both are genuinely taken, and then it offers the next free time.</p>
         </div>
       </div>
       <div class="card">
         <span class="ico">&#8377;</span>
         <div>
-          <h3>Quotes your prices</h3>
-          <p>Weekday and weekend rates, hours multiplied correctly, advance and cancellation terms as you set them.</p>
-        </div>
-      </div>
-      <div class="card">
-        <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-        <div>
-          <h3>Applies your rules</h3>
-          <p>Opening hours, minimum notice before a slot, whole-hour bookings &mdash; it will refuse politely and offer the earliest time it can actually give.</p>
-        </div>
-      </div>
-      <div class="card">
-        <span class="ico"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 20v-5h5"/></svg></span>
-        <div>
-          <h3>Handles cancellations</h3>
-          <p>Finds the booking by phone number, reads it back, and cancels only after the customer clearly says yes. The hour goes back on sale immediately.</p>
+          <h3>Your rates, your rules</h3>
+          <p>Weekday and weekend prices, hours counted properly, opening times, how much notice you need, what happens on a cancellation. You tell us once and it does not forget at 1 AM.</p>
         </div>
       </div>
       <div class="card">
         <span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg></span>
         <div>
-          <h3>Speaks their language</h3>
-          <p>English, Hindi, Hinglish or Marathi &mdash; whichever the caller starts in, for the whole call.</p>
+          <h3>It answers in the caller&rsquo;s language</h3>
+          <p>English, Hindi, Hinglish or Marathi. &ldquo;Kal raat 9 baje se 11 baje tak cricket book karna hai&rdquo; gets the same booking as the English version.</p>
         </div>
       </div>
       <div class="card">
         <span class="ico"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6z"/><path d="M10.5 20a2 2 0 0 0 3 0"/></svg></span>
         <div>
-          <h3>Tells you instantly</h3>
-          <p>Every confirmed booking reaches you on WhatsApp or Telegram the moment it is made, with the name, number, slot, ground and amount.</p>
+          <h3>You know before he hangs up</h3>
+          <p>The booking is on your phone the moment it is made: name, number, sport, slot, ground and amount. No notebook, no three WhatsApp chats.</p>
         </div>
       </div>
     </div>
@@ -449,6 +425,13 @@
         <span class="msg-time">booked just now by the voice agent</span>
       </div>
     </div>
+  </section>
+
+  <section class="proof">
+    <figure>
+      <img src="img/dugout-grounds.jpg" alt="Two floodlit turf grounds in play at night" loading="lazy">
+      <figcaption>It is answering the phone at this turf tonight &mdash; two grounds, cricket on one, football on the other, open until 2 AM.</figcaption>
+    </figure>
   </section>
 
   <section class="faq">
